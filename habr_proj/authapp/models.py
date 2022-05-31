@@ -12,3 +12,7 @@ class HabrUser(AbstractUser):
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
+
+    def activate_user(self):
+        self.is_active = True
+        self.save()
