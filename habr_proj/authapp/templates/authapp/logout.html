@@ -1,0 +1,15 @@
+{% extends 'authapp/base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="h2 text-center head">
+        Выполнен выход пользователя
+    </div>
+
+    <button class="btn btn-primary">
+        <a href="{% url 'index' %}" class="">
+            На главную
+        </a>
+    </button>
+
+{% endblock %}

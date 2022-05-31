@@ -157,6 +157,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'authapp.HabrUser'
 
+LOGIN_REDIRECT_URL = '/'
+
 ADMIN_USERNAME = os.getenv('ADMIN_USERNAME')
 ADMIN_EMAIL = os.getenv('ADMIN_EMAIL')
 ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD')
