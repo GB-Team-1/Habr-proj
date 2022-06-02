@@ -16,7 +16,7 @@ class Command(BaseCommand):
             password=settings.ADMIN_PASSWORD
         )
         PostCategory.objects.all().delete()
-        PostCategory.objects.create(name='design').save()
-        PostCategory.objects.create(name='web').save()
-        PostCategory.objects.create(name='mobile').save()
-        PostCategory.objects.create(name='marketing').save()
+        PostCategory.objects.create(name='Дизайн').save()
+        PostCategory.objects.create(name='Веб-разработка').save()
+        PostCategory.objects.create(name='Мобильная разработка').save()
+        PostCategory.objects.create(name='Маркетинг').save()
