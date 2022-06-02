@@ -1,11 +1,12 @@
 from django.contrib import auth
+from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.views import LoginView, LogoutView
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.views import View
-from django.views.generic import CreateView
-from authapp.forms import HabrUserLoginForm, HabrUserRegisterForm
+from django.views.generic import CreateView, UpdateView
+from authapp.forms import HabrUserLoginForm, HabrUserRegisterForm, HabrUserEditForm
 from authapp.models import HabrUser
 from authapp.services import send_verify_email
 
@@ -46,3 +47,21 @@ class VerifyUserView(View):
             user.activate_user()
             auth.login(request, user)
         return render(request, 'authapp/register_result.html')
+
+
+class UpdateProfileView(UpdateView):
+    form_class = HabrUserEditForm
+    template_name = 'authapp/edit_profile.html'
+    success_url = reverse_lazy('authapp:profile')
+
+    def get_object(self, queryset=None):
+        if self.request.user.is_anonymous:
+            return None
+        return self.request.user
+
+    def get(self, request, *args, **kwargs):
+        if self.request.user.is_anonymous:
+            return HttpResponseRedirect(reverse('auth:login'))
+        return super(UpdateProfileView, self).get(request, *args, **kwargs)
+
+
