@@ -9,9 +9,8 @@ fake = Faker()
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        HabrUser.objects.all().delete()
         HabrUser.objects.create_superuser(
-            settings.ADMIN_USERNAME,
+            username=settings.ADMIN_USERNAME,
             email=settings.ADMIN_EMAIL,
             password=settings.ADMIN_PASSWORD
         )
