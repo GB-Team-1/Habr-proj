@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>
+        {% block title %}
+            {{ title|title }}
+        {% endblock %}
+    </title>
+    {% block css %}
+        <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+        <link rel="stylesheet" href="{% static 'fonts/font-awesome/css/font-awesome.css' %}">
+    {% endblock %}
+</head>
+<body>
+<div class="container">
+    {% block menu %}
+    <header>
+        {% include 'mainapp/includes/inc_main_nav.html' %}
+        {% include 'mainapp/includes/inc_categories_profile.html' %}
+    </header>
+{% endblock %}
+<main>
+    {% block content %}
+    {% endblock %}
+</main>
+
+    {% block footer %}
+        {% include 'mainapp/includes/inc_footer.html' %}
+
+    {% endblock %}
+</div>
+
+{% block js %}
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+
+{% endblock %}
+</body>
+</html>

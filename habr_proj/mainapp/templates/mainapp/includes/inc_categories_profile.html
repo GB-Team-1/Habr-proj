@@ -1,0 +1,29 @@
+{% load static %}
+<nav id="profile-nav" class="main-nav__block">
+    <div class="main-nav__header main-nav__category">
+        <ul class="header-categories">
+            <li><a href="/">Все</a></li>
+            {% for item in categories %}
+                <li><a
+                        href="/"
+                        {% if request.resolver_match.url_name == item.url %}class="active" {% endif %}
+                >{{ item.name }}</a></li>
+            {% endfor %}
+        </ul>
+        <div class="header-profile">
+            {% if user.is_authenticated %}
+                <img class="user-icon" src="{% static 'img/user.png' %}" alt="" @click="profileListShow=!profileListShow">
+                <ul class="profile-menu" v-show="profileListShow">
+                    <li><a href="{% url 'auth:profile' %}">Профиль</a></li>
+                    <li><a href="">Мои публикации</a></li>
+                    <li><a href="{% url 'auth:logout' %}">Выйти</a></li>
+
+                </ul>
+            {% else %}
+                <a href="{% url 'auth:register' %}">Регистрация/</a>
+                <a href="{% url 'auth:login' %}">Войти</a>
+            {% endif %}
+        </div>
+    </div>
+
+</nav>

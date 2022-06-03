@@ -9,6 +9,7 @@ from django.views.generic import CreateView, UpdateView
 from authapp.forms import HabrUserLoginForm, HabrUserRegisterForm, HabrUserEditForm
 from authapp.models import HabrUser
 from authapp.services import send_verify_email
+from posts.models import PostCategory
 
 
 class LoginUserView(LoginView):
@@ -18,7 +19,7 @@ class LoginUserView(LoginView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data['title'] = 'Вход'
-
+        context_data['categories'] = PostCategory.objects.filter()
         return context_data
 
 
@@ -30,6 +31,12 @@ class RegisterUserView(CreateView):
     form_class = HabrUserRegisterForm
     template_name = 'authapp/register.html'
     success_url = reverse_lazy("auth:login")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Регистрация'
+        context['categories'] = PostCategory.objects.filter()
+        return context
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -58,6 +65,12 @@ class UpdateProfileView(UpdateView):
         if self.request.user.is_anonymous:
             return None
         return self.request.user
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Редактирование профиля'
+        context['categories'] = PostCategory.objects.filter()
+        return context
 
     def get(self, request, *args, **kwargs):
         if self.request.user.is_anonymous:
