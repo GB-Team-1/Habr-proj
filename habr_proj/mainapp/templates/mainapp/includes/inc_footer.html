@@ -1,0 +1,25 @@
+<footer>
+        <div class="footer-container__main">
+            <ul>
+                <li class="footer-header">Ваш аккаунт</li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'auth:profile' %}">Профиль</a></li>
+                    <li><a href="">Мои публикации</a></li>
+                    <li><a href="{% url 'auth:logout' %}">Выйти</a></li>
+                {% else %}
+                    <li><a href="{% url 'auth:register' %}">Регистрация</a></li>
+                    <li><a href="{% url 'auth:login' %}">Войти</a></li>
+                {% endif %}
+            </ul>
+            <ul>
+                <li class="footer-header">Разделы</li>
+                <li><a href="/">Все</a></li>
+                {% for item in categories %}
+                    <li><a
+                            href="/"
+                            {% if request.resolver_match.url_name == item.url %}class="active" {% endif %}
+                    >{{ item.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </footer>
