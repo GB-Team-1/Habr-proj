@@ -2,6 +2,8 @@ from uuid import uuid4
 
 from django.db import models
 
+from authapp.models import HabrUser
+
 
 class PostCategory(models.Model):
     name = models.CharField(max_length=64, unique=True, verbose_name='Название')
@@ -14,9 +16,14 @@ class PostCategory(models.Model):
     def get_posts(self):
         return self.posts.select_related()
 
+    def __str__(self):
+        return f'{self.name}'
+
 
 class Posts(models.Model):
     uid = models.UUIDField(primary_key=True, default=uuid4)
+    user = models.ForeignKey(HabrUser, on_delete=models.CASCADE,
+                             related_name='userpost', verbose_name='Пользователь', default=None)
     category = models.ForeignKey(PostCategory, on_delete=models.CASCADE, related_name='posts', verbose_name='Категория')
     title = models.CharField(max_length=512, unique=True, verbose_name='Наименование')
     image = models.ImageField(upload_to='posts', blank=True, verbose_name='Изображение')

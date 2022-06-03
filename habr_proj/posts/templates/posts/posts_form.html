@@ -1,0 +1,17 @@
+{% extends 'posts/base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="h2 text-center head">
+       Создание Хаба
+    </div>
+    <form class="form-horizontal" action="{% url 'auth:register' %}" method="post">
+        {% csrf_token %}
+        {% if next %}
+            <input type="hidden" name="next" value="{{ next }}">
+        {% endif %}
+        {{ form.as_p }}
+        <input type="submit" class="form-control" value="Сохранить">
+    </form>
+    <hr>
+{% endblock %}
