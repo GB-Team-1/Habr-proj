@@ -7,6 +7,7 @@ from posts.models import PostCategory
 
 fake = Faker()
 
+
 class Command(BaseCommand):
     def handle(self, *args, **options):
         HabrUser.objects.create_superuser(
