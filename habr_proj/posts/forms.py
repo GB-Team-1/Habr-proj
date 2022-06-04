@@ -6,7 +6,7 @@ from posts.models import Posts, Links
 class PostCreateForm(forms.ModelForm):
     class Meta:
         model = Posts
-        exclude = ('uid', 'created_at', 'updated_at', 'is_active', 'user',)
+        exclude = ('uid', 'created_at', 'updated_at', 'is_active','user')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
