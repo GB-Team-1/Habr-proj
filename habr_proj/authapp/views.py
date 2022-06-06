@@ -5,15 +5,15 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.views import View
-from django.views.generic import CreateView, UpdateView
+from django.views.generic import CreateView, UpdateView, TemplateView
 from authapp.forms import HabrUserLoginForm, HabrUserRegisterForm, HabrUserEditForm
 from authapp.models import HabrUser
 from authapp.services import send_verify_email
-from posts.models import PostCategory
+from posts.models import PostCategory, Posts
 
 
 class LoginUserView(LoginView):
-    template_name = 'authapp/login.html'
+    template_name = 'authapp/auth-login.html'
     form_class = HabrUserLoginForm
 
     def get_context_data(self, **kwargs):
@@ -29,7 +29,7 @@ class LogoutUserView(LogoutView):
 
 class RegisterUserView(CreateView):
     form_class = HabrUserRegisterForm
-    template_name = 'authapp/register.html'
+    template_name = 'authapp/auth-register.html'
     success_url = reverse_lazy("auth:login")
 
     def get_context_data(self, **kwargs):
@@ -58,7 +58,7 @@ class VerifyUserView(View):
 
 class UpdateProfileView(UpdateView):
     form_class = HabrUserEditForm
-    template_name = 'authapp/edit_profile.html'
+    template_name = 'authapp/profile.html'
     success_url = reverse_lazy('authapp:profile')
 
     def get_object(self, queryset=None):
@@ -70,11 +70,10 @@ class UpdateProfileView(UpdateView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Редактирование профиля'
         context['categories'] = PostCategory.objects.filter()
+        context['posts_count'] = Posts.objects.filter(user=self.request.user).count()
         return context
 
     def get(self, request, *args, **kwargs):
         if self.request.user.is_anonymous:
             return HttpResponseRedirect(reverse('auth:login'))
         return super(UpdateProfileView, self).get(request, *args, **kwargs)
-
-

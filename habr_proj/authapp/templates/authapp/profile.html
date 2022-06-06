@@ -1,0 +1,78 @@
+{% extends 'mainapp/new_base.html' %}
+{% load static %}
+
+{% block content %}
+    <section class="section">
+        {% include 'authapp/includes/inc_profile_header.html' %}
+        <div class="section-body">
+            <h2 class="section-title">Hi, {{ user.username }}!</h2>
+            <p class="section-lead">
+                Изменить информацию о себе на этой странице.
+            </p>
+
+            <div class="row mt-sm-4">
+                <div class="col-12 col-md-12 col-lg-5">
+                    <div class="card profile-widget">
+                        <div class="profile-widget-header">
+                            <img alt="image" src="{% static 'assets/img/avatar/avatar-1.png' %}"
+                                 class="rounded-circle profile-widget-picture">
+                            <div class="profile-widget-items">
+                                <div class="profile-widget-item">
+                                    <div class="profile-widget-item-label">Посты</div>
+                                    <div class="profile-widget-item-value">{{ posts_count }}</div>
+                                </div>
+                                <div class="profile-widget-item">
+                                    <div class="profile-widget-item-label">Followers</div>
+                                    <div class="profile-widget-item-value">6,8K</div>
+                                </div>
+                                <div class="profile-widget-item">
+                                    <div class="profile-widget-item-label">Following</div>
+                                    <div class="profile-widget-item-value">2,1K</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="profile-widget-description">
+                            <div class="profile-widget-name">{{ user.first_name }} {{ user.last_name }}
+                                <div class="text-muted d-inline font-weight-normal">
+                                    <div class="slash"></div>
+                                    Web Developer
+                                </div>
+                            </div>
+                            {{ user.about_me }}
+                        </div>
+                        <div class="card-footer text-center">
+                            <div class="font-weight-bold mb-2"></div>
+                            <a href="#" class="btn btn-social-icon btn-facebook mr-1">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" class="btn btn-social-icon btn-twitter mr-1">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="btn btn-social-icon btn-github mr-1">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            <a href="#" class="btn btn-social-icon btn-instagram">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-12 col-lg-7">
+                    <div class="card col-12">
+                        <form method="post" class="needs-validation" action="{% url 'auth:profile' %}"
+                              novalidate="">
+                            <div class="card-header">
+                                <h4>Редактирование профиля</h4>
+                            </div>
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <div class="card-footer text-right">
+                                <button class="btn btn-primary">Сохранить изменения</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
