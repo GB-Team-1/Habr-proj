@@ -2,61 +2,118 @@
 {% load static %}
 
 {% block content %}
-   <div class="h2 text-center head">
-       Ваши Хабы,
-       {% if user.first_name %}
-           {{ user.first_name|title}}
-       {% else %}
-           Пользователь
-       {% endif %}
-   </div>
-   <table class="table posts_list">
-       <thead>
-         <tr>
-           <th>Наименование</th>
-           <th>Категория</th>
-           <th>Создан</th>
-           <th>Статус публикации</th>
-         </tr>
-       </thead>
-       <tbody>
-           {% for item in object_list %}
-               {% if item.is_active %}
-               <tr>
-                   <td class="td1 posts_list">{{ item.title }}</td>
-                   <td>{{ item.category }}</td>
-                   <td>{{ item.created_at|date:"Y-m-d H:i:s" }}</td>
-                   <td>{{ item.get_publish_status }}</td>
-                   <td>
-                       {% if not item.is_publish %}
-<!--                       <a href="{% url 'posts:post_publish' item.pk %}">-->
-<!--                           Опубликовать-->
-<!--                       </a>-->
-                       {% endif %}
-                   </td>
-<!--                   <td>-->
-<!--                         <a href="{% url 'posts:post_update' item.pk %}">-->
-<!--                           Редактировать-->
-<!--                         </a>-->
-<!--                   </td>-->
-                   <td>
-                         <a href="{% url 'posts:post_delete' item.pk %}">
-                             Удалить
-                         </a>
-                   </td>
-               </tr>
-               {% endif %}
-           {% endfor %}
-       </tbody>
-   </table>
-   <button class="btn btn-default btn-round">
-       <a href="{% url 'main' %}">
-           на главную
-       </a>
-   </button>
-   <button class="btn btn-default btn-round">
-       <a href="{% url 'posts:post_create' %}">
-           Новый Хаб
-       </a>
-   </button>
+    <section class="section">
+        <section class="section"></section>
+        <div class="section-header">
+            <h1>Ваши хабы, {% if user.first_name %}
+                {{ user.first_name|title }}
+            {% else %}
+                Пользователь
+            {% endif %}</h1>
+            <div class="section-header-button">
+                <a href="{% url 'posts:post_create' %}" class="btn btn-primary">Новый хаб</a>
+            </div>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item active"><a href="{% url 'main' %}">Главная</a></div>
+                <div class="breadcrumb-item">Ваши хабы</div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Все хабы</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="float-right">
+                            <form>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Search">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary"><i class="fas fa-search"></i></button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="clearfix mb-3"></div>
+
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <tr>
+                                    <th>Название</th>
+                                    <th>Категория</th>
+
+                                    <th>Дата создания</th>
+                                    <th>Статус</th>
+                                    <th>Изменить</th>
+                                </tr>
+                                {% for item in object_list %}
+                                    <tr>
+                                        <td>{{ item.title }}
+                                            <div class="table-links">
+                                                <a href="#">Просмотр</a>
+                                                <div class="bullet"></div>
+                                                <a href="">Редактировать</a>
+                                                <div class="bullet"></div>
+                                                <a href="{% url 'posts:post_delete' item.pk %}" class="text-danger">Удалить</a>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <a href="#">{{ item.category.name }}</a>
+                                        </td>
+
+                                        <td>{{ item.created_at }}</td>
+                                        <td>
+                                            {% if item.is_published %}
+                                                <div class="badge badge-primary">Опубликовано</div>
+                                            {% else %}
+                                                <div class="badge badge-danger">Не опубликовано</div>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if item.is_published %}
+                                                <a href="{% url 'posts:post_publish' item.pk %}" class="btn">Убрать </a>
+                                            {% else %}
+                                            <a href="{% url 'posts:post_publish' item.pk %}" class="btn">Опубликовать</a>
+                                            {% endif %}
+
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                        {#                    <div class="float-right">#}
+                        {#                      <nav>#}
+                        {#                        <ul class="pagination">#}
+                        {#                          <li class="page-item disabled">#}
+                        {#                            <a class="page-link" href="#" aria-label="Previous">#}
+                        {#                              <span aria-hidden="true">&laquo;</span>#}
+                        {#                              <span class="sr-only">Previous</span>#}
+                        {#                            </a>#}
+                        {#                          </li>#}
+                        {#                          <li class="page-item active">#}
+                        {#                            <a class="page-link" href="#">1</a>#}
+                        {#                          </li>#}
+                        {#                          <li class="page-item">#}
+                        {#                            <a class="page-link" href="#">2</a>#}
+                        {#                          </li>#}
+                        {#                          <li class="page-item">#}
+                        {#                            <a class="page-link" href="#">3</a>#}
+                        {#                          </li>#}
+                        {#                          <li class="page-item">#}
+                        {#                            <a class="page-link" href="#" aria-label="Next">#}
+                        {#                              <span aria-hidden="true">&raquo;</span>#}
+                        {#                              <span class="sr-only">Next</span>#}
+                        {#                            </a>#}
+                        {#                          </li>#}
+                        {#                        </ul>#}
+                        {#                      </nav>#}
+                        {#                    </div>#}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
 {% endblock %}
