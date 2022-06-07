@@ -49,6 +49,11 @@ class Posts(models.Model):
     def get_links(self):
         return self.links.select_related()
 
+    def get_publish_status(self):
+        if self.is_published:
+            return 'Опубликован'
+        return 'Не опубликован'
+
 
 class Links(models.Model):
     uid = models.UUIDField(primary_key=True, default=uuid4)

@@ -15,7 +15,7 @@
                 <img class="user-icon" src="{% static 'img/user.png' %}" alt="" @click="profileListShow=!profileListShow">
                 <ul class="profile-menu" v-show="profileListShow">
                     <li><a href="{% url 'auth:profile' %}">Профиль</a></li>
-                    <li><a href="">Мои публикации</a></li>
+                    <li><a href="{% url 'posts:post_list' %}">Мои публикации</a></li>
                     <li><a href="{% url 'auth:logout' %}">Выйти</a></li>
 
                 </ul>
