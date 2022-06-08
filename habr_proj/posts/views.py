@@ -57,3 +57,30 @@ class PostPublishView(DetailView):
             post.save()
         return HttpResponseRedirect(reverse('posts:post_list'))
 
+
+class PostDetailView(DetailView):
+    template_name = 'posts/post_detail.html'
+
+    def get_queryset(self):
+        return Posts.objects.filter(pk=self.kwargs.get('pk'))
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['title'] = 'Хаб'
+        context_data['post'] = self.get_queryset().first()
+        print(self.queryset)
+        return context_data
+
+
+class PostDetailProfileView(DetailView):
+    template_name = 'posts/posts_detail_profile.html'
+
+    def get_queryset(self):
+        return Posts.objects.filter(pk=self.kwargs.get('pk'))
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['title'] = 'Хаб'
+        context_data['post'] = self.get_queryset().first()
+        print(self.queryset)
+        return context_data
