@@ -54,7 +54,7 @@
                                             <div class="table-links">
                                                 <a href="{% url 'auth:post_detail_profile' item.pk %}">Просмотр</a>
                                                 <div class="bullet"></div>
-                                                <a href="">Редактировать</a>
+                                                <a href="{% url 'posts:post_update' item.pk %}">Редактировать</a>
                                                 <div class="bullet"></div>
                                                 <a href="{% url 'posts:post_delete' item.pk %}" class="text-danger">Удалить</a>
                                             </div>
