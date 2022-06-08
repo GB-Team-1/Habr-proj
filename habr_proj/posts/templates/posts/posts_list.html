@@ -52,7 +52,7 @@
                                     <tr>
                                         <td>{{ item.title }}
                                             <div class="table-links">
-                                                <a href="#">Просмотр</a>
+                                                <a href="{% url 'auth:post_detail_profile' item.pk %}">Просмотр</a>
                                                 <div class="bullet"></div>
                                                 <a href="">Редактировать</a>
                                                 <div class="bullet"></div>
