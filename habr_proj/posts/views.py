@@ -14,6 +14,8 @@ class PostCreateView(CreateView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data['title'] = 'Хаб/создание'
+        context_data['create_update'] = 'Создание Хаба'
+        context_data['create_update_text'] = 'создать новый'
         return context_data
 
     def post(self, request, *args, **kwargs):
@@ -39,7 +41,25 @@ class PostDeleteView(DeleteView):
 
 
 class PostUpdateView(UpdateView):
-    pass
+    model = Posts
+    form_class = PostCreateForm
+    success_url = reverse_lazy('posts:post_list')
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['title'] = 'Хаб/редактирование'
+        context_data['create_update'] = 'Редактирование Хаба'
+        context_data['create_update_text'] = 'редактировать'
+        return context_data
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.user = request.user
+            user.save()
+            # return HttpResponseRedirect(reverse('posts:post_list'))
+        return super(PostUpdateView, self).post(request, *args, **kwargs)
 
 
 class PostPublishView(DetailView):
