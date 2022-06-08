@@ -7,7 +7,7 @@
               <ul class="dropdown-menu">
 
                     {% for item in categories %}
-                         <li class="nav-item"><a href="index.html" class="nav-link"> {{ item.name }}</a></li>
+                         <li class="nav-item"><a href="{% url 'posts:post_category' item.pk %}" class="nav-link"> {{ item.name }}</a></li>
                   {% endfor %}
               </ul>
             </li>

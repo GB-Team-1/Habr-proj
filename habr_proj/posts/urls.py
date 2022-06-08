@@ -1,6 +1,7 @@
 from django.urls import path
 
 from posts import views as posts
+from posts.views import PostListCategoryView
 
 app_name = 'posts'
 
@@ -12,4 +13,5 @@ urlpatterns = [
     path('publish/<pk>/', posts.PostPublishView.as_view(), name='post_publish'),
 
     path('detail/<pk>/', posts.PostDetailView.as_view(), name='post_detail'),
+    path('category/<pk>/', PostListCategoryView.as_view(), name='post_category')
 ]
