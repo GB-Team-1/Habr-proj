@@ -12,7 +12,7 @@ class Index(TemplateView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Главная'
         context['categories'] = get_categories()
-        context['posts'] = Posts.objects.filter(is_published=True).order_by('-created_at')
+        context['posts'] = Posts.objects.filter(is_published=True, is_active=True).order_by('-created_at')
         return context
 
 

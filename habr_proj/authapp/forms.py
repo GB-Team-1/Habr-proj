@@ -62,7 +62,7 @@ class HabrUserRegisterForm(UserCreationForm):
 class HabrUserEditForm(UserChangeForm):
     class Meta:
         model = HabrUser
-        fields = ('username', 'first_name', 'last_name', 'email', 'birthday', 'about_me', 'password',)
+        fields = ('username', 'first_name', 'last_name', 'email', 'birthday', 'avatar', 'specialization', 'about_me', 'password',)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
