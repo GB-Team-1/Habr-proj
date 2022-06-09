@@ -120,7 +120,6 @@ class PostDetailProfileView(DetailView):
         context_data = super().get_context_data(**kwargs)
         context_data['title'] = 'Хаб'
         context_data['post'] = self.get_queryset().first()
-        print(self.queryset)
         return context_data
 
 

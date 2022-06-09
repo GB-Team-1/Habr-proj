@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from posts.models import PostCategory, Posts, Links
+from posts.models import PostCategory, Posts, Links, Comment
 
 
 @admin.register(PostCategory)
@@ -12,10 +12,13 @@ class PostCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Posts)
 class PostsAdmin(admin.ModelAdmin):
-    list_display = ('category', 'title', 'tags', 'body', 'is_published', 'is_active',)
+    list_display = ('category', 'title', 'tags', 'is_published', 'is_active',)
     list_filter = ('is_active',)
 
 
-@admin.register(Links)
-class LinksAdmin(admin.ModelAdmin):
-    list_display = ('post', 'name', 'link',)
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('post', 'user',  'is_active')
+    list_filter = ('is_active',)
+
+

@@ -6,8 +6,10 @@ from django.db import models
 
 class HabrUser(AbstractUser):
     uid = models.UUIDField(primary_key=True, default=uuid4)
+    avatar = models.ImageField(upload_to='user_avatar', blank=True, verbose_name='Аватар')
     birthday = models.DateField(blank=True, null=True, verbose_name='Дата рождения')
     about_me = models.TextField(max_length=512, blank=True, verbose_name='Обо мне')
+    specialization = models.CharField(max_length=150, blank=True, null=True, verbose_name='Специализация')
 
     class Meta:
         verbose_name = 'Пользователь'

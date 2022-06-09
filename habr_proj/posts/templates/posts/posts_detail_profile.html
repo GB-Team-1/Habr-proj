@@ -34,12 +34,20 @@
                                 <p>
                                     {{ post.body }}</p>
                                 <div class="article-user">
-                                    <img alt="image" src="{% static 'assets/img/avatar/avatar-1.png' %}">
+                                    {% if post.user.avatar %}
+                                       <img alt="image" src="/media/{{ post.user.avatar }}" style="width: 45px;height: 45px;">
+                                    {% else %}
+                                        <img alt="image" src="{% static 'assets/img/avatar/avatar-1.png' %}">
+                                    {% endif %}
                                     <div class="article-user-details">
                                         <div class="user-detail-name">
                                             <a href="#">{{ post.user.username }}</a>
                                         </div>
-                                        <div class="text-job">Web Developer</div>
+                                         {% if post.user.specialization %}
+                                        <div class="text-job">{{ post.user.specialization }}</div>
+                                        {% else %}
+                                             <div class="text-job"></div>
+                                        {% endif %}
                                     </div>
                                 </div>
                     </article>

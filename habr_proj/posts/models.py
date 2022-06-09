@@ -60,3 +60,16 @@ class Links(models.Model):
     post = models.ForeignKey(Posts, on_delete=models.CASCADE, related_name='links', verbose_name='Хаб')
     name = models.CharField(max_length=128, verbose_name='Наименование')
     link = models.URLField(verbose_name='Ссылка')
+
+
+class Comment(models.Model):
+    post = models.ForeignKey(Posts, on_delete=models.CASCADE, verbose_name='Хаб')
+    user = models.ForeignKey(HabrUser, on_delete=models.CASCADE, verbose_name='Пользователь')
+    body = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'

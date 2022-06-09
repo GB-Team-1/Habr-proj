@@ -14,8 +14,13 @@
                 <div class="col-12 col-md-12 col-lg-5">
                     <div class="card profile-widget">
                         <div class="profile-widget-header">
-                            <img alt="image" src="{% static 'assets/img/avatar/avatar-1.png' %}"
+                            {% if user.avatar %}
+                                <img alt="image" src="/media/{{ user.avatar }}"
+                                 class="rounded-circle profile-widget-picture" style="height: 100px;width: 100px;">
+                            {% else %}
+                                 <img alt="image" src="{% static 'assets/img/avatar/avatar-1.png' %}"
                                  class="rounded-circle profile-widget-picture">
+                            {% endif %}
                             <div class="profile-widget-items">
                                 <div class="profile-widget-item">
                                     <div class="profile-widget-item-label">Посты</div>
@@ -35,7 +40,7 @@
                             <div class="profile-widget-name">{{ user.first_name }} {{ user.last_name }}
                                 <div class="text-muted d-inline font-weight-normal">
                                     <div class="slash"></div>
-                                    Web Developer
+                                    {{ user.specialization }}
                                 </div>
                             </div>
                             {{ user.about_me }}
@@ -59,8 +64,8 @@
                 </div>
                 <div class="col-12 col-md-12 col-lg-7">
                     <div class="card col-12">
-                        <form method="post" class="needs-validation" action="{% url 'auth:profile' %}"
-                              novalidate="">
+                        <form method="post" class="needs-validation" action="{% url 'auth:profile' %} "
+                              novalidate=""  enctype="multipart/form-data">
                             <div class="card-header">
                                 <h4>Редактирование профиля</h4>
                             </div>
