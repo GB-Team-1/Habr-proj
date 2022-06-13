@@ -28,9 +28,11 @@
                             </div>
                             </div>
                             <div class="article-details">
-                                <div class="article-category"><a href="{% url 'posts:post_category' post.category.pk %}">{{ post.category.name }}</a>
+                                <div class="article-category"><a
+                                        href="{% url 'posts:post_category' post.category.pk %}">{{ post.category.name }}</a>
                                     <div class="bullet"></div>
-                                    <a href="#">{{ post.created_at.date }} в {{ post.created_at.time.hour}}:{{ post.created_at.time.minute}}</a></div>
+                                    <a href="#">{{ post.created_at.date }}
+                                        в {{ post.created_at.time.hour }}:{{ post.created_at.time.minute }}</a></div>
                                 <div class="article-title">
                                     <h2><a href="{% url 'posts:post_detail' post.pk %}">{{ post.title }}</a></h2>
                                 </div>
@@ -40,13 +42,17 @@
                                     <img alt="image" src="{% static 'assets/img/avatar/avatar-1.png' %}">
                                     <div class="article-user-details">
                                         <div class="user-detail-name">
-                                           {% if post.user.pk == user.pk %}
+                                            {% if post.user.pk == user.pk %}
                                                 <a href="{% url 'auth:profile' %}">{{ post.user.username }}</a>
                                             {% else %}
                                                 <a href="{% url 'auth:user_profile' post.user.pk %}">{{ post.user.username }}</a>
                                             {% endif %}
                                         </div>
-                                        <div class="text-job">Web Developer</div>
+                                        {% if post.user.specialization %}
+                                            <div class="text-job">{{ post.user.specialization }}</div>
+                                        {% else %}
+                                            <div class="text-job"></div>
+                                        {% endif %}
                                     </div>
                                 </div>
                     </article>
