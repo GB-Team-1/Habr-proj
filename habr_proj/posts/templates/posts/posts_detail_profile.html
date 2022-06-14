@@ -32,7 +32,7 @@
                                     <h2><a href="{% url 'posts:post_detail' post.pk %}">{{ post.title }}</a></h2>
                                 </div>
                                 <p>
-                                    {{ post.body }}</p>
+                                    {{ post.body|safe }}</p>
                                 <div class="article-user">
                                     {% if post.user.avatar %}
                                        <img alt="image" src="/media/{{ post.user.avatar }}" style="width: 45px;height: 45px;">

@@ -1,5 +1,6 @@
 from uuid import uuid4
 
+from ckeditor.fields import RichTextField
 from django.db import models
 
 from authapp.models import HabrUser
@@ -28,7 +29,7 @@ class Posts(models.Model):
     title = models.CharField(max_length=512, unique=True, verbose_name='Наименование')
     image = models.ImageField(upload_to='posts', blank=True, verbose_name='Изображение')
     tags = models.CharField(max_length=256, blank=True, verbose_name='Тэги')
-    body = models.TextField(verbose_name='Текст Хаба')
+    body = RichTextField(verbose_name='Текст Хаба', )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Создан')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Обновлен')
     is_published = models.BooleanField(default=False, verbose_name='Опубликован')
@@ -65,7 +66,7 @@ class Links(models.Model):
 class Comment(models.Model):
     post = models.ForeignKey(Posts, on_delete=models.CASCADE, verbose_name='Хаб')
     user = models.ForeignKey(HabrUser, on_delete=models.CASCADE, verbose_name='Пользователь')
-    body = models.TextField()
+    comment_body = RichTextField(verbose_name='Комментарий', default=None)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)

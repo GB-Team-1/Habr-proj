@@ -1,6 +1,7 @@
 {% extends 'mainapp/new_base.html' %}
 {% load static %}
 
+
 {% block content %}
     <section class="section">
         <div class="section-header">
@@ -33,6 +34,7 @@
                                 {% if next %}
                                     <input type="hidden" name="next" value="{{ next }}">
                                 {% endif %}
+                                {{ form.media }}
                                 {{ form.as_p }}
                                 <input type="submit" class="btn btn-primary" value="Сохранить">
                             </form>

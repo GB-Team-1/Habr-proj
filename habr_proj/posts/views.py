@@ -3,13 +3,13 @@ from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView, DetailView
 
-from posts.forms import PostCreateForm
+from posts.forms import PostCreateForm, CommentCreateForm, PostUpdateForm
 from posts.models import Posts, PostCategory
 
 
 def get_posts_in_category(pk):
     return Posts.objects.filter(category__pk=pk, is_active=True, is_published=True).select_related() \
-        .order_by('created_at')
+        .order_by('-created_at')
 
 
 def get_categories():
@@ -60,7 +60,7 @@ class PostDeleteView(DeleteView):
 
 class PostUpdateView(UpdateView):
     model = Posts
-    form_class = PostCreateForm
+    form_class = PostUpdateForm
     success_url = reverse_lazy('posts:post_list')
 
     def get_context_data(self, **kwargs):
@@ -96,8 +96,9 @@ class PostPublishView(DetailView):
         return HttpResponseRedirect(reverse('posts:post_list'))
 
 
-class PostDetailView(DetailView):
+class PostDetailView(UpdateView):
     template_name = 'posts/post_detail.html'
+    form_class = CommentCreateForm
 
     def get_queryset(self):
         return Posts.objects.filter(pk=self.kwargs.get('pk'))
@@ -106,8 +107,18 @@ class PostDetailView(DetailView):
         context_data = super().get_context_data(**kwargs)
         context_data['title'] = 'Хаб'
         context_data['post'] = self.get_queryset().first()
-        print(self.queryset)
+        context_data['comment_title'] = 'Написать комментарий'
         return context_data
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.user = request.user
+            user.post = self.get_queryset()[0]
+            user.save()
+            return HttpResponseRedirect(reverse('posts:post_detail', kwargs={'pk':self.kwargs.get('pk')}))
+        return super(PostDetailView, self).post(request, *args, **kwargs)
 
 
 class PostDetailProfileView(DetailView):

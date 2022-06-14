@@ -36,8 +36,9 @@
                                 <div class="article-title">
                                     <h2><a href="{% url 'posts:post_detail' post.pk %}">{{ post.title }}</a></h2>
                                 </div>
-                                <p style="overflow: hidden;display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;line-height: 1.3em;height: 3.9em;">
-                                    {{ post.body }}</p>
+                                 <div style="overflow: hidden;display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;line-height: 1.3em;height: 3.9em;">
+                                {{ post.body | safe}}
+                            </div>
                                 <div class="article-user">
                                     <img alt="image" src="{% static 'assets/img/avatar/avatar-1.png' %}">
                                     <div class="article-user-details">
