@@ -72,9 +72,8 @@
                             {% if next %}
                                 <input type="hidden" name="next" value="{{ next }}">
                             {% endif %}
-                            <label for="id_body">Комментарий:</label>
-                            <textarea name="body" cols="40" rows="20" class="form-control" required=""
-                                      id="id_body"></textarea>
+                            {{ form.media }}
+                            {{ form.as_p }}
                             <input type="submit" class="btn btn-primary" value="Сохранить" style="margin-top: 20px;">
                         </form>
                     </div>
