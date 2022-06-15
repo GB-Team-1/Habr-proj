@@ -64,6 +64,7 @@ class Links(models.Model):
 
 
 class Comment(models.Model):
+    uid = models.UUIDField(primary_key=True, default=uuid4)
     post = models.ForeignKey(Posts, on_delete=models.CASCADE, verbose_name='Хаб')
     user = models.ForeignKey(HabrUser, on_delete=models.CASCADE, verbose_name='Пользователь')
     comment_body = RichTextField(verbose_name='Комментарий', default=None)
@@ -74,3 +75,36 @@ class Comment(models.Model):
     class Meta:
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
+
+
+class Notification(models.Model):
+    STATUS_CREATE = 'CR'
+    STATUS_SEND_PROCESS = 'PR'
+    STATUS_SEND_COMPLETED = 'CPT'
+    STATUS_ERROR = 'ERR'
+
+    STATUSES = (
+        (STATUS_CREATE, 'Создано'),
+        (STATUS_SEND_PROCESS, 'Процесс отправки'),
+        (STATUS_SEND_COMPLETED, 'Отправка успешна'),
+        (STATUS_ERROR, 'Ошибка отправки'),
+    )
+
+    uid = models.UUIDField(primary_key=True, default=uuid4)
+    post = models.ForeignKey(Posts, on_delete=models.CASCADE, related_name='postnotify', verbose_name='Хаб')
+    comment = models.ForeignKey(Comment, blank=True, on_delete=models.CASCADE,
+                                related_name='commentnotify', verbose_name='Комментарий')
+    to_user = models.ForeignKey(
+        HabrUser,
+        on_delete=models.CASCADE,
+        related_name='usernotify',
+        verbose_name='Пользователю'
+    )
+    notify_body = models.TextField(blank=True, verbose_name='Содержание уведомления')
+    status = models.CharField(max_length=3, choices=STATUSES, default=STATUS_CREATE, verbose_name='Статус')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Создано')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='Обновлено')
+
+    class Meta:
+        verbose_name = 'Уведомление'
+        verbose_name_plural = 'Уведомления'
