@@ -24,7 +24,6 @@ class BaseNotification(models.Model):
     to_user = models.ForeignKey(
         HabrUser,
         on_delete=models.CASCADE,
-        related_name='usernotify',
         verbose_name='Пользователю'
     )
     notify_body = models.TextField(blank=True, verbose_name='Содержание уведомления')
