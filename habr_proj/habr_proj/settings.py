@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'mainapp',
     'authapp',
     'posts',
-    'ckeditor'
+    'ckeditor',
+    'notifyapp'
 ]
 
 MIDDLEWARE = [

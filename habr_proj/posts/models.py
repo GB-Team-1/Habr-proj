@@ -64,6 +64,7 @@ class Links(models.Model):
 
 
 class Comment(models.Model):
+    uid = models.UUIDField(primary_key=True, default=uuid4)
     post = models.ForeignKey(Posts, on_delete=models.CASCADE, verbose_name='Хаб')
     user = models.ForeignKey(HabrUser, on_delete=models.CASCADE, verbose_name='Пользователь')
     comment_body = RichTextField(verbose_name='Комментарий', default=None)
@@ -74,3 +75,7 @@ class Comment(models.Model):
     class Meta:
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
+
+
+class Likes(models.Model):
+    pass
