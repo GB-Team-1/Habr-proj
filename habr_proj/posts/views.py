@@ -3,8 +3,8 @@ from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView, DetailView
 
-from posts.forms import PostCreateForm, CommentCreateForm, PostUpdateForm
-from posts.models import Posts, PostCategory
+from posts.forms import PostCreateForm, CommentCreateForm, PostUpdateForm, CommentUpdateForm
+from posts.models import Posts, PostCategory, Comment
 
 
 def get_posts_in_category(pk):
@@ -108,6 +108,8 @@ class PostDetailView(UpdateView):
         context_data['title'] = 'Хаб'
         context_data['post'] = self.get_queryset().first()
         context_data['comment_title'] = 'Написать комментарий'
+        context_data['comments'] = Comment.objects.filter(post__pk=self.kwargs.get('pk'), is_active=True).order_by(
+            '-created_at')
         return context_data
 
     def post(self, request, *args, **kwargs):
@@ -117,7 +119,7 @@ class PostDetailView(UpdateView):
             user.user = request.user
             user.post = self.get_queryset()[0]
             user.save()
-            return HttpResponseRedirect(reverse('posts:post_detail', kwargs={'pk':self.kwargs.get('pk')}))
+            return HttpResponseRedirect(reverse('posts:post_detail', kwargs={'pk': self.kwargs.get('pk')}))
         return super(PostDetailView, self).post(request, *args, **kwargs)
 
 
@@ -155,3 +157,28 @@ class PostListCategoryView(ListView):
         context_data['categories'] = get_categories()
 
         return context_data
+
+
+class CommentDeleteView(DetailView):
+    model = Comment
+
+    def get_queryset(self):
+        return Comment.objects.filter(pk=self.kwargs.get('pk')).first()
+
+    def get(self, request, *args, **kwargs):
+        comment = self.get_queryset()
+        comment.is_active = False
+        comment.save()
+        return HttpResponseRedirect(reverse('posts:post_detail', kwargs={'pk': comment.post.pk}))
+
+
+class CommentUpdateView(UpdateView):
+    form_class = CommentUpdateForm
+    template_name = 'posts/post_detail.html'
+
+    def get_queryset(self):
+        return Comment.objects.filter(pk=self.kwargs.get('pk'))
+
+    def get_success_url(self):
+        comment = self.get_queryset().first()
+        return reverse_lazy('posts:post_detail', kwargs={'pk': comment.post.pk})
