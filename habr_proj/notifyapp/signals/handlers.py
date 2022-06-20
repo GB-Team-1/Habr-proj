@@ -26,10 +26,11 @@ def notify_post_create(sender, instance, **kwargs):
 #     instance.save()
 
 @receiver(post_save, sender=Comment)
-def notify_post_comment(sender, instance, **kwargs):
-    user = HabrUser.objects.get(username=instance.post.user)
-    NotifyComment.objects.create(
-        to_user=user,
-        notify_body=f'К Хабу {instance.post.title} пользователь {instance.user} оставил комментарий',
-        comment=instance
-    )
+def notify_post_comment(sender, instance, created, **kwargs):
+    if created:
+        user = HabrUser.objects.get(username=instance.post.user)
+        NotifyComment.objects.create(
+            to_user=user,
+            notify_body=f'К Хабу {instance.post.title} пользователь {instance.user} оставил комментарий',
+            comment=instance
+        )

@@ -26,9 +26,9 @@ class BaseNotification(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Пользователю'
     )
-    post = models.ForeignKey(Posts, blank=True, null=True, on_delete=models.CASCADE)
-    like = models.ForeignKey(Likes, blank=True, null=True, on_delete=models.CASCADE)
-    comment = models.ForeignKey(Comment, blank=True, null=True, on_delete=models.CASCADE)
+    post = models.ForeignKey(Posts, blank=True, null=True, on_delete=models.CASCADE, verbose_name='Хаб')
+    like = models.ForeignKey(Likes, blank=True, null=True, on_delete=models.CASCADE, verbose_name='Лайк')
+    comment = models.ForeignKey(Comment, blank=True, null=True, on_delete=models.CASCADE, verbose_name='Комментарий')
     notify_body = models.TextField(blank=True, verbose_name='Содержание уведомления')
     status_send = models.CharField(max_length=3, choices=SEND_STATUSES,
                                    default=STATUS_CREATE, verbose_name='Статус отпраки')
@@ -55,7 +55,7 @@ class NotifyPostStatus(BaseNotification):
         (POST_BLOCKED, 'Заблокирован (не прошел модерацию)'),
         (POST_DELETED, 'Удален'),
     )
-    post = models.ForeignKey(Posts, on_delete=models.CASCADE, related_name='postnotify', verbose_name='Хаб')
+
     status = models.CharField(max_length=3, choices=POST_STATUSES,
                               default=POST_NEW, verbose_name='Статус хаба')
 
@@ -65,7 +65,6 @@ class NotifyPostStatus(BaseNotification):
 
 
 class NotifyLike(BaseNotification):
-    like = models.ForeignKey(Likes, on_delete=models.CASCADE, related_name='likenotify', verbose_name='Лайк')
 
     class Meta:
         verbose_name = 'Уведомление по лайкам'
@@ -73,8 +72,6 @@ class NotifyLike(BaseNotification):
 
 
 class NotifyComment(BaseNotification):
-    comment = models.ForeignKey(Comment, on_delete=models.CASCADE,
-                                related_name='commentnotify', verbose_name='Комментарий')
 
     class Meta:
         verbose_name = 'Уведомление по комментариям'
