@@ -1,3 +1,8 @@
 from django.contrib import admin
 
-# Register your models here.
+from notifyapp.models import NotifyPostStatus, NotifyLike, NotifyComment, NotifyUserStatus
+
+
+@admin.register(NotifyPostStatus, NotifyLike, NotifyComment, NotifyUserStatus)
+class NotifyAdmin(admin.ModelAdmin):
+    pass
