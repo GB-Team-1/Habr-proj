@@ -18,7 +18,7 @@ class Index(ListView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Главная'
         context['categories'] = get_categories()
-        context['notify'] = get_all_notify(pk=self.request.user.pk)
+        context['notify'] = get_all_notify(pk=self.request.user.pk)[:5]
         return context
 
 

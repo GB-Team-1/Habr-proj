@@ -41,13 +41,6 @@ class BaseNotification(models.Model):
     class Meta:
         abstract = True
 
-    def get_all_notify(self, pk):
-        post_query = self.postnotify.filter(is_read=False, to_user__pk=pk).ordered_by('-created_at')
-        like_query = self.likenotify.filter(is_read=False, to_user__pk=pk).ordered_by('-created_at')
-        comment_query = self.commentnotify.filter(is_read=False, to_user__pk=pk).ordered_by('-created_at')
-        user_query = NotifyUserStatus.objects.filter(is_read=False, to_user__pk=pk).ordered_by('-created_at')
-        return post_query.union(like_query.union(comment_query.union(user_query)))
-
 
 class NotifyPostStatus(BaseNotification):
     POST_NEW = 'NEW'
@@ -64,7 +57,7 @@ class NotifyPostStatus(BaseNotification):
     )
     post = models.ForeignKey(Posts, on_delete=models.CASCADE, related_name='postnotify', verbose_name='Хаб')
     status = models.CharField(max_length=3, choices=POST_STATUSES,
-                              default=POST_TO_MODERATION, verbose_name='Статус хаба')
+                              default=POST_NEW, verbose_name='Статус хаба')
 
     class Meta:
         verbose_name = 'Уведомление по хабу'
