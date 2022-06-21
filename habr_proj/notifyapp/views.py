@@ -40,13 +40,15 @@ class NotifyListView(ListView):
     template_name = 'notifyapp/notify_list.html'
 
     def get_queryset(self):
-        print(get_all_notify(self.request.user.pk))
         return get_all_notify(self.request.user.pk)
 
     def get_context_data(self, *args, **kwargs):
         context_data = super().get_context_data(*args, **kwargs)
         context_data['title'] = f'Уведомления {self.request.user}'
-        context_data['notify_list'] = get_all_notify(pk=self.request.user.pk)
+        context_data['notify_list'] = self.get_queryset()
+        context_data['notify'] = get_all_unread_notify(pk=self.request.user.pk)[:5]
+        return context_data
+
 
 
 class NotifyDetailView(DetailView):

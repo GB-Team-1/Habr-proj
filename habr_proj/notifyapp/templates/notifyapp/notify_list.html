@@ -45,7 +45,7 @@
                                 </tr>
 
                                 {% for item in notify_list %}
-                                    <tr>
+                                    <tr class="dropdown-item-unread">
                                         <td>{{ item.notify_body }}
                                             <div class="table-links">
                                                 <a href="{% url 'notify:notify_detail' item.pk %}">Просмотр</a>
@@ -95,6 +95,5 @@
             </div>
         </div>
     </section>
-{{ notify_list }}
 
 {% endblock %}
