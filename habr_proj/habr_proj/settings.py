@@ -166,16 +166,16 @@ ADMIN_USERNAME = os.getenv('ADMIN_USERNAME')
 ADMIN_EMAIL = os.getenv('ADMIN_EMAIL')
 ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD')
 
-# EMAIL_HOST = os.getenv('EMAIL_HOST')
-# EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
-# EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
-# EMAIL_PORT = os.getenv('EMAIL_PORT')
-# EMAIL_USE_SSL = True
-
-EMAIL_HOST = 'smtp.yandex.ru'
-EMAIL_HOST_USER = 'habrproj@yandex.ru'
-EMAIL_HOST_PASSWORD = 'fsuxvafvcodugjth'
-EMAIL_PORT = 465
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
 EMAIL_USE_SSL = True
+
+# EMAIL_HOST = 'smtp.yandex.ru'
+# EMAIL_HOST_USER = 'habrproj@yandex.ru'
+# EMAIL_HOST_PASSWORD = 'fsuxvafvcodugjth'
+# EMAIL_PORT = 465
+# EMAIL_USE_SSL = True
 
 BASE_URL = os.getenv('BASE_URL')
