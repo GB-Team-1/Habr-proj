@@ -65,10 +65,14 @@
 
                                         <td>{{ item.created_at }}</td>
                                         <td>
-                                            {% if item.is_published %}
-                                                <div class="badge badge-primary">Опубликовано</div>
-                                            {% else %}
-                                                <div class="badge badge-danger">Не опубликовано</div>
+                                            {% if item.status_moderation == "TO" %}
+                                                <div class="badge badge-primary">На модерации</div>
+                                                {% elif item.status_moderation == "PM" and item.is_published %}
+                                                 <div class="badge  badge-success">Опубликован</div>
+                                                {% elif item.status_moderation == "BLC" %}
+                                                 <div class="badge badge-danger">Заблокирован</div>
+                                            {% elif item.status_moderation == "PM" and item.is_published != True %}
+                                                <div class="badge badge-light">Не опубликован</div>
                                             {% endif %}
                                         </td>
                                         <td>

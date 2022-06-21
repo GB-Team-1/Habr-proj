@@ -12,8 +12,8 @@ class PostCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Posts)
 class PostsAdmin(admin.ModelAdmin):
-    list_display = ('category', 'title', 'tags', 'is_published', 'is_active',)
-    list_filter = ('is_active',)
+    list_display = ('category', 'title', 'tags', 'is_published', 'is_active','is_moderated')
+    list_filter = ('is_active','is_moderated')
 
 
 @admin.register(Comment)
