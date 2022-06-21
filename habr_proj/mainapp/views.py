@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView, ListView
 
-from notifyapp.views import get_all_notify
+from notifyapp.views import get_all_unread_notify
 from posts.models import PostCategory, Posts
 from posts.views import get_categories
 
@@ -18,7 +18,7 @@ class Index(ListView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Главная'
         context['categories'] = get_categories()
-        context['notify'] = get_all_notify(pk=self.request.user.pk)[:5]
+        context['notify'] = get_all_unread_notify(pk=self.request.user.pk)[:5]
         return context
 
 

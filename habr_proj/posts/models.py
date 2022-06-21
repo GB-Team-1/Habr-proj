@@ -89,4 +89,10 @@ class Comment(models.Model):
 
 
 class Likes(models.Model):
-    pass
+    uid = models.UUIDField(primary_key=True, default=uuid4)
+    post = models.ForeignKey(Posts, default=0,  on_delete=models.CASCADE, verbose_name='Хаб')
+    user = models.ForeignKey(HabrUser, default=0, on_delete=models.CASCADE, verbose_name='Пользователь')
+
+    class Meta:
+        verbose_name = 'Лайк'
+        verbose_name_plural = 'Лайки'

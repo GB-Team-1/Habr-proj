@@ -63,6 +63,7 @@ class PostDeleteView(DeleteView):
 
 class PostUpdateView(UpdateView):
     model = Posts
+    template_name = 'posts/posts_form_update.html'
     form_class = PostUpdateForm
     success_url = reverse_lazy('posts:post_list')
 
