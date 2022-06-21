@@ -8,7 +8,8 @@ from posts.models import Posts, PostCategory, Comment
 
 
 def get_posts_in_category(pk):
-    return Posts.objects.filter(category__pk=pk, is_active=True, is_published=True).select_related() \
+    return Posts.objects.filter(category__pk=pk, is_active=True, is_published=True, is_moderated=True,
+                                status_moderation=Posts.POST_MODERATE).select_related() \
         .order_by('-created_at')
 
 
@@ -20,6 +21,7 @@ def get_categories():
 class PostCreateView(CreateView):
     model = Posts
     form_class = PostCreateForm
+    template_name = 'posts/posts_form.html'
     success_url = reverse_lazy('posts:post_list')
 
     def get_context_data(self, **kwargs):
@@ -43,7 +45,8 @@ class PostListView(ListView):
     model = Posts
 
     def get_queryset(self):
-        return super().get_queryset().filter(user=self.request.user, is_active=True)
+        return super().get_queryset().filter(user=self.request.user, is_active=True).order_by(
+            '-created_at').select_related()
 
     def get_context_data(self, *args, **kwargs):
         context_data = super().get_context_data(*args, **kwargs)
@@ -68,16 +71,19 @@ class PostUpdateView(UpdateView):
         context_data['title'] = 'Хаб/редактирование'
         context_data['create_update'] = 'Редактирование Хаба'
         context_data['create_update_text'] = 'редактировать'
+        context_data['pk'] = self.kwargs.get('pk')
         return context_data
-
-    def post(self, request, *args, **kwargs):
-        form = self.get_form()
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.user = request.user
-            user.save()
-            # return HttpResponseRedirect(reverse('posts:post_list'))
-        return super(PostUpdateView, self).post(request, *args, **kwargs)
+    #
+    # def post(self, request, *args, **kwargs):
+    #     form = self.get_form()
+    #     if form.is_valid():
+    #         user = form.save(commit=False)
+    #         user.user = request.user
+    #         # user.is_moderated = False
+    #         # user.status_moderation = Posts.POST_MODERATE
+    #         user.save()
+    #         # return HttpResponseRedirect(reverse('posts:post_list'))
+    #     return super(PostUpdateView, self).post(request, *args, **kwargs)
 
 
 class PostPublishView(DetailView):

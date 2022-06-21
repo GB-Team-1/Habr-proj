@@ -22,6 +22,15 @@ class PostCategory(models.Model):
 
 
 class Posts(models.Model):
+    POST_TO_MODERATION = 'TO'
+    POST_MODERATE = 'PM'
+    POST_BLOCKED = 'BLC'
+    POST_MODERATE_STATUSES = (
+        (POST_TO_MODERATION, 'На модерации'),
+        (POST_MODERATE,  'Одобрен'),
+        (POST_BLOCKED, 'Заблокирован'),
+    )
+
     uid = models.UUIDField(primary_key=True, default=uuid4)
     user = models.ForeignKey(HabrUser, on_delete=models.CASCADE,
                              related_name='userpost', verbose_name='Пользователь', default=None)
@@ -30,8 +39,10 @@ class Posts(models.Model):
     image = models.ImageField(upload_to='posts', blank=True, verbose_name='Изображение')
     tags = models.CharField(max_length=256, blank=True, verbose_name='Тэги')
     body = RichTextField(verbose_name='Текст Хаба', )
+    status_moderation = models.CharField(max_length=10, choices=POST_MODERATE_STATUSES, default=POST_TO_MODERATION, verbose_name='Статус модерации')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Создан')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Обновлен')
+    is_moderated = models.BooleanField(default=False, verbose_name='Проверен')
     is_published = models.BooleanField(default=False, verbose_name='Опубликован')
     is_active = models.BooleanField(default=True, verbose_name='Активен')
 
