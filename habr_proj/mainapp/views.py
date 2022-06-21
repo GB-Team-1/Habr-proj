@@ -12,7 +12,7 @@ class Index(ListView):
     paginate_by = 6
 
     def get_queryset(self):
-        return Posts.objects.filter(is_published=True, is_active=True).order_by('-created_at')
+        return Posts.objects.filter(is_published=True, is_active=True, is_moderated=True,status_moderation=Posts.POST_MODERATE).order_by('-created_at').select_related()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

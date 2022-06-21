@@ -29,11 +29,11 @@
                             <h4>{{create_update}}</h4>
                         </div>
                         <div class="card-body">
-                            <form class="form-horizontal" action="{% url 'posts:post_create' %}" method="post"  enctype="multipart/form-data">
+                            <form class="form-horizontal" action="{% url 'posts:post_update' pk %}" method="post"  enctype="multipart/form-data">
                                 {% csrf_token %}
-                                {% if next %}
-                                    <input type="hidden" name="next" value="{{ next }}">
-                                {% endif %}
+{#                                {% if next %}#}
+{#                                    <input type="hidden" name="next" value="{{ next }}">#}
+{#                                {% endif %}#}
                                 {{ form.media }}
                                 {{ form.as_p }}
                                 <input type="submit" class="btn btn-primary" value="Сохранить">
