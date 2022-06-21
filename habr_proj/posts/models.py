@@ -88,5 +88,11 @@ class Comment(models.Model):
         verbose_name_plural = 'Комментарии'
 
 
-class Likes(models.Model):
-    pass
+class PostsLikes(models.Model):
+    uid = models.UUIDField(primary_key=True, default=uuid4)
+    post = models.ForeignKey(Posts, on_delete=models.CASCADE, verbose_name='Хаб')
+    user = models.ForeignKey(HabrUser, on_delete=models.CASCADE, verbose_name='Пользователь')
+
+    class Meta:
+        verbose_name = 'Лайк'
+        verbose_name_plural = 'Лайки'

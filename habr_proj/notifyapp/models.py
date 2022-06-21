@@ -3,7 +3,7 @@ from uuid import uuid4
 from django.db import models
 
 from authapp.models import HabrUser
-from posts.models import Posts, Comment, Likes
+from posts.models import Posts, Comment, PostsLikes
 
 
 class BaseNotification(models.Model):
@@ -54,7 +54,7 @@ class NotifyPostStatus(BaseNotification):
 
 
 class NotifyLike(BaseNotification):
-    like = models.ForeignKey(Likes, on_delete=models.CASCADE, related_name='likenotify', verbose_name='Лайк')
+    like = models.ForeignKey(PostsLikes, on_delete=models.CASCADE, related_name='likenotify', verbose_name='Лайк')
 
 
 class NotifyComment(BaseNotification):
