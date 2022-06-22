@@ -42,54 +42,45 @@
                                     <th>Текст уведомления</th>
                                     <th>Дата создания</th>
                                     <th>Статус отправки</th>
+                                    <th>Состояние</th>
                                 </tr>
 
                                 {% for item in notify_list %}
                                     <tr class="dropdown-item-unread">
                                         <td>{{ item.notify_body }}
                                             <div class="table-links">
-                                                <a href="{% url 'notify:notify_detail' item.pk %}">Просмотр</a>
+                                                <a href="{% url 'notify:notify_read' item.category item.pk %}">
+                                                    {% if item.is_read %}
+                                                    Отметить как не прочитанное
+                                                    {% else %}
+                                                    Отметить как прочитанное
+                                                    {% endif %}
+                                                </a>
                                                 <div class="bullet"></div>
-                                                <a href="{% url 'notify:notify_delete' item.pk %}" class="text-danger">Удалить</a>
+                                                {% if item.category == 'PST' %}
+                                                <a href="{% url 'posts:post_detail' item.post.pk %}">Просмотреть Хаб</a>
+                                                {% endif %}
+                                                <div class="bullet"></div>
+                                                <a href="{% url 'notify:notify_delete' item.category item.pk %}" class="text-danger">Удалить</a>
                                             </div>
                                         </td>
 
                                         <td>{{ item.created_at }}</td>
                                         <td>
-                                            {{ item.status_send }}
+                                            {{ item.get_status_send_display }}
+                                        </td>
+                                        <td>
+                                            {% if item.is_read %}
+                                                Просмотрено
+                                            {% else %}
+                                                Не просмотрено
+                                            {% endif %}
                                         </td>
 
                                     </tr>
                                 {% endfor %}
                             </table>
                         </div>
-                        {#                    <div class="float-right">#}
-                        {#                      <nav>#}
-                        {#                        <ul class="pagination">#}
-                        {#                          <li class="page-item disabled">#}
-                        {#                            <a class="page-link" href="#" aria-label="Previous">#}
-                        {#                              <span aria-hidden="true">&laquo;</span>#}
-                        {#                              <span class="sr-only">Previous</span>#}
-                        {#                            </a>#}
-                        {#                          </li>#}
-                        {#                          <li class="page-item active">#}
-                        {#                            <a class="page-link" href="#">1</a>#}
-                        {#                          </li>#}
-                        {#                          <li class="page-item">#}
-                        {#                            <a class="page-link" href="#">2</a>#}
-                        {#                          </li>#}
-                        {#                          <li class="page-item">#}
-                        {#                            <a class="page-link" href="#">3</a>#}
-                        {#                          </li>#}
-                        {#                          <li class="page-item">#}
-                        {#                            <a class="page-link" href="#" aria-label="Next">#}
-                        {#                              <span aria-hidden="true">&raquo;</span>#}
-                        {#                              <span class="sr-only">Next</span>#}
-                        {#                            </a>#}
-                        {#                          </li>#}
-                        {#                        </ul>#}
-                        {#                      </nav>#}
-                        {#                    </div>#}
                     </div>
                 </div>
             </div>

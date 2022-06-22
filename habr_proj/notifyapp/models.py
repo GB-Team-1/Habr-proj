@@ -19,7 +19,19 @@ class BaseNotification(models.Model):
         (STATUS_ERROR, 'Ошибка отправки'),
     )
 
+    CATEGORY_POST = 'PST'
+    CATEGORY_LIKE = 'LK'
+    CATEGORY_COMMENT = 'CMT'
+    CATEGORY_USER = 'USR'
+    CATEGORIES = (
+        (CATEGORY_POST, 'Уведомления к постам'),
+        (CATEGORY_LIKE, 'Уведомления к лайкам'),
+        (CATEGORY_COMMENT, 'Уведомления к коментариям'),
+        (CATEGORY_USER, 'Уведомления по учетной записи'),
+    )
+
     uid = models.UUIDField(primary_key=True, default=uuid4)
+    category = models.CharField(max_length=3, null=True, choices=CATEGORIES, verbose_name='Категория уведомлений')
 
     to_user = models.ForeignKey(
         HabrUser,
@@ -65,14 +77,12 @@ class NotifyPostStatus(BaseNotification):
 
 
 class NotifyLike(BaseNotification):
-
     class Meta:
         verbose_name = 'Уведомление по лайкам'
         verbose_name_plural = 'Уведомления по лайкам'
 
 
 class NotifyComment(BaseNotification):
-
     class Meta:
         verbose_name = 'Уведомление по комментариям'
         verbose_name_plural = 'Уведомления по комментариям'
