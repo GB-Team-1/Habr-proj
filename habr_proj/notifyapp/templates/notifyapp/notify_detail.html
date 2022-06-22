@@ -1,0 +1,111 @@
+{% extends 'mainapp/new_base.html' %}
+{% load static %}
+
+{% block content %}
+    <section class="section">
+        <div class="">
+            <article class="article article-style-c">
+                <div class="article-header">
+                    <div class="article-details">
+                        <div class="article-category"><a href="#">{{ post.category.name }}</a>
+                            <div class="bullet"></div>
+                            <a href="#">{{ post.created_at.date }}
+                                в {{ post.created_at.time.hour }}:{{ post.created_at.time.minute }}</a></div>
+                        <div class="article-title">
+                            <h2><a href="{% url 'posts:post_detail' post.pk %}">{{ post.title }}</a></h2>
+                        </div>
+                        <p >
+                            {{ post.body|safe }}</p>
+                        <div class="article-user">
+                            {% if post.user.avatar %}
+                                <img alt="image" src="/media/{{ post.user.avatar }}" style="width: 45px;height: 45px;">
+                            {% else %}
+                                <img alt="image" src="{% static 'assets/img/avatar/avatar-1.png' %}">
+                            {% endif %}
+                            <div class="article-user-details">
+                                <div class="user-detail-name">
+                                    {% if post.user.pk == user.pk %}
+                                        <a href="{% url 'auth:profile' %}">{{ post.user.username }}</a>
+                                    {% else %}
+                                        <a href="{% url 'auth:user_profile' post.user.pk %}">{{ post.user.username }}</a>
+                                    {% endif %}
+
+                                </div>
+                                {% if post.user.specialization %}
+                                    <div class="text-job">{{ post.user.specialization }}</div>
+                                {% else %}
+                                    <div class="text-job"></div>
+                                {% endif %}
+                            </div>
+                        </div>
+            </article>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>{{ comment_title }}</h4>
+                    </div>
+                    <div class="card-body">
+                        <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {% if next %}
+                                <input type="hidden" name="next" value="{{ next }}">
+                            {% endif %}
+                            {{ form.media }}
+                            {{ form.as_p }}
+                            <input type="submit" class="btn btn-primary" value="Сохранить" style="margin-top: 20px;">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+     <div class="">
+                <div class="card">
+                  <div class="card-header">
+                    <h4>Комментарии</h4>
+                  </div>
+                  <div class="card-body">
+                    <ul class="list-unstyled list-unstyled-border list-unstyled-noborder">
+                        {% for item in comments %}
+                            <li class="media">
+                            {% if item.user.avatar %}
+                                <img alt="image" class="mr-3 rounded-circle" width="70" src="/media/{{ item.user.avatar }}">
+                                {% else %}
+                        <img alt="image" class="mr-3 rounded-circle" width="70" src="{% static 'assets/img/avatar/avatar-1.png' %}">
+                                {% endif %}
+                        <div class="media-body">
+                             {% if item.user.pk == user.pk %}
+                                 <div class="media-title mb-1"><a href="{% url 'auth:profile' %}">{{ item.user.username }}</a></div>
+                            {% else %}
+                                 <div class="media-title mb-1"><a href="{% url 'auth:user_profile' item.user.pk %}">{{ item.user.username }}</a></div>
+                            {% endif %}
+                          <div class="text-time">{{ item.created_at.date }}
+                                        в {{ item.created_at.time.hour }}:{{ item.created_at.time.minute }}</div>
+                          <div class="media-description text-muted">{{ item.comment_body | safe }}</div>
+                          <div class="media-links">
+                              <button class="btn btn-link" id="comment-update">Редактировать</button>
+                             <div class="card-body" id="comment-div" style="display: none">
+                        <form class="form-horizontal " action="{% url 'posts:comment_update' item.pk %}" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {% if next %}
+                                <input type="hidden" name="next" value="{{ next }}">
+                            {% endif %}
+                            {{ form.media }}
+                            {{ form.as_p }}
+                            <input type="submit" class="btn btn-primary" value="Сохранить" style="margin-top: 20px;">
+                        </form>
+                    </div>
+                            <div class="bullet"></div>
+                            <a href="{% url 'posts:comment_delete' item.pk %}" class="text-danger">Удалить</a>
+                          </div>
+                        </div>
+                      </li>
+                        {% endfor %}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+    </section>
+{% endblock %}

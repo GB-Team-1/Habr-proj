@@ -11,7 +11,7 @@ def get_all_unread_notify(pk):
     like_query = NotifyLike.objects.filter(is_read=False, to_user__pk=pk)
     comment_query = NotifyComment.objects.filter(is_read=False, to_user__pk=pk)
     user_query = NotifyUserStatus.objects.filter(is_read=False, to_user__pk=pk)
-    return post_query.union(like_query.union(comment_query.union(user_query)))
+    return post_query.union(like_query.union(comment_query.union(user_query))).order_by('-created_at')
 
 
 def get_all_notify(pk):
@@ -19,7 +19,7 @@ def get_all_notify(pk):
     like_query = NotifyLike.objects.filter(to_user__pk=pk)
     comment_query = NotifyComment.objects.filter(to_user__pk=pk)
     user_query = NotifyUserStatus.objects.filter(to_user__pk=pk)
-    return post_query.union(like_query.union(comment_query.union(user_query)))
+    return post_query.union(like_query.union(comment_query.union(user_query))).order_by('-created_at')
 
 
 class NotifyConfirmAllView(DetailView):
@@ -50,9 +50,16 @@ class NotifyListView(ListView):
         return context_data
 
 
-
 class NotifyDetailView(DetailView):
-    pass
+
+    template_name = 'notifyapp/notify_detail.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super().get_context_data(*args, **kwargs)
+        context_data['title'] = f'Уведомления {self.request.user}'
+        # context_data['notify_item'] = self.get_queryset()
+        context_data['notify'] = get_all_unread_notify(pk=self.request.user.pk)[:5]
+        return context_data
 
 
 class NotifyDeleteView(DeleteView):
