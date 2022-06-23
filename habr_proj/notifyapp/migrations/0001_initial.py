@@ -55,7 +55,7 @@ class Migration(migrations.Migration):
                 ('status_send', models.CharField(choices=[('CR', 'Создано'), ('PR', 'Процесс отправки'), ('CPT', 'Отправка успешна'), ('ERR', 'Ошибка отправки')], default='CR', max_length=3, verbose_name='Статус')),
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Создано')),
                 ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Обновлено')),
-                ('like', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='likenotify', to='posts.likes', verbose_name='Лайк')),
+                ('like', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='likenotify', to='posts.postslikes', verbose_name='Лайк')),
                 ('to_user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='Пользователю')),
             ],
             options={

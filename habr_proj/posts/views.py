@@ -3,6 +3,8 @@ from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView, DetailView
 
+from notifyapp.models import NotifyPostStatus
+from notifyapp.services import send_notification
 from posts.forms import PostCreateForm, CommentCreateForm, PostUpdateForm, CommentUpdateForm
 from posts.models import Posts, PostCategory, Comment
 
@@ -63,6 +65,7 @@ class PostDeleteView(DeleteView):
 
 class PostUpdateView(UpdateView):
     model = Posts
+    template_name = 'posts/posts_form_update.html'
     form_class = PostUpdateForm
     success_url = reverse_lazy('posts:post_list')
 
@@ -163,6 +166,38 @@ class PostListCategoryView(ListView):
         context_data['categories'] = get_categories()
 
         return context_data
+
+
+class PostModerateView(DetailView):
+
+    def get_queryset(self):
+        return Posts.objects.filter(pk=self.kwargs.get('pk'))
+
+    def get(self, request, *args, **kwargs):
+        post = self.get_queryset().first()
+        mod_result = self.kwargs.get('mod_result')
+        if mod_result == 'ok':
+            post.is_moderated = True
+            post.status_moderation = 'PM'
+            post.save()
+            notify = NotifyPostStatus.objects.get(post=post)
+            notify.status = 'MOD'
+            notify.to_user = post.user
+            notify.is_read = False
+            notify.notify_body = f'Пост {post.title} прошел модерацию'
+            notify.save()
+        else:
+            post.is_moderated = False
+            post.status_moderation = 'BLC'
+            post.save()
+            notify = NotifyPostStatus.objects.get(post=post)
+            notify.status = 'BLC'
+            notify.to_user = post.user
+            notify.is_read = False
+            notify.notify_body = f'Пост {post.title} не прошел модерацию!'
+            notify.save()
+        # send_notification(notify)
+        return HttpResponseRedirect(reverse('posts:post_detail', kwargs={'pk': self.kwargs.get('pk')}))
 
 
 class CommentDeleteView(DetailView):
