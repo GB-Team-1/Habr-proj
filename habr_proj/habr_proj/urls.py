@@ -26,6 +26,7 @@ urlpatterns = [
     path('auth/', include('authapp.urls', namespace='auth')),
     path('posts/', include('posts.urls', namespace='posts')),
     path('notify/', include('notifyapp.urls', namespace='notify')),
+    path('settings/', include('settings.urls', namespace='settings')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
