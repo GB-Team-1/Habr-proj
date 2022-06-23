@@ -180,23 +180,10 @@ class PostModerateView(DetailView):
             post.is_moderated = True
             post.status_moderation = 'PM'
             post.save()
-            notify = NotifyPostStatus.objects.get(post=post)
-            notify.status = 'MOD'
-            notify.to_user = post.user
-            notify.is_read = False
-            notify.notify_body = f'Пост {post.title} прошел модерацию'
-            notify.save()
         else:
             post.is_moderated = False
             post.status_moderation = 'BLC'
             post.save()
-            notify = NotifyPostStatus.objects.get(post=post)
-            notify.status = 'BLC'
-            notify.to_user = post.user
-            notify.is_read = False
-            notify.notify_body = f'Пост {post.title} не прошел модерацию!'
-            notify.save()
-        # send_notification(notify)
         return HttpResponseRedirect(reverse('posts:post_detail', kwargs={'pk': self.kwargs.get('pk')}))
 
 

@@ -77,12 +77,16 @@ class NotifyPostStatus(BaseNotification):
 
 
 class NotifyLike(BaseNotification):
+    status = models.CharField(max_length=3, blank=True, null=True)
+
     class Meta:
         verbose_name = 'Уведомление по лайкам'
         verbose_name_plural = 'Уведомления по лайкам'
 
 
 class NotifyComment(BaseNotification):
+    status = models.CharField(max_length=3, blank=True, null=True)
+
     class Meta:
         verbose_name = 'Уведомление по комментариям'
         verbose_name_plural = 'Уведомления по комментариям'
