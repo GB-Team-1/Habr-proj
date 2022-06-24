@@ -12,7 +12,7 @@ def get_all_unread_notify(pk):
     like_query = NotifyLike.objects.filter(is_read=False, to_user__pk=pk)
     comment_query = NotifyComment.objects.filter(is_read=False, to_user__pk=pk)
     user_query = NotifyUserStatus.objects.filter(is_read=False, to_user__pk=pk)
-    return post_query.union(like_query.union(comment_query.union(user_query))).order_by('-created_at').count()
+    return post_query.union(like_query, comment_query, user_query).order_by('-created_at').count()
 
 
 def get_all_notify(pk):
@@ -20,7 +20,7 @@ def get_all_notify(pk):
     like_query = NotifyLike.objects.filter(to_user__pk=pk)
     comment_query = NotifyComment.objects.filter(to_user__pk=pk)
     user_query = NotifyUserStatus.objects.filter(to_user__pk=pk)
-    return post_query.union(like_query.union(comment_query.union(user_query))).order_by('-created_at')
+    return post_query.union(like_query, comment_query, user_query).order_by('-created_at')
 
 
 def get_notify(pk, category):
@@ -79,4 +79,11 @@ class NotifyReadView(DetailView):
 
 
 class NotifyDeleteView(DeleteView):
-    pass
+
+    def get_queryset(self):
+        return get_notify(self.kwargs.get('pk'), self.kwargs.get('category'))
+
+    def get(self, request, *args, **kwargs):
+        notify = self.get_queryset().first()
+        notify.delete()
+        return HttpResponseRedirect(reverse('notify:notify_list'))

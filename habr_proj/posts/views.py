@@ -187,6 +187,22 @@ class PostModerateView(DetailView):
         return HttpResponseRedirect(reverse('posts:post_detail', kwargs={'pk': self.kwargs.get('pk')}))
 
 
+class PostModerateListView(ListView):
+    model = Posts
+    template_name = 'posts/posts_moderate_list.html'
+
+    def get_queryset(self):
+        return super().get_queryset().filter(is_active=True, is_moderated=False).order_by(
+            '-created_at').select_related()
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super().get_context_data(*args, **kwargs)
+        context_data['title'] = f'Хабы на модерацию'
+        context_data['categories'] = get_categories()
+
+        return context_data
+
+
 class CommentDeleteView(DetailView):
     model = Comment
 

@@ -42,12 +42,13 @@ class RegisterUserView(CreateView):
         form = self.get_form()
         if form.is_valid():
             new_user = form.save()
-            send_verify_email(new_user)
+            # send_verify_email(new_user)
             return HttpResponseRedirect(reverse('auth:login'))
         return super(RegisterUserView, self).post(request, *args, **kwargs)
 
 
 class VerifyUserView(View):
+
     def get(self, request, key):
         user = HabrUser.objects.filter(uid=key).first()
         if user:

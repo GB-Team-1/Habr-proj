@@ -1,7 +1,8 @@
 from django.urls import path
 
 from posts import views as posts
-from posts.views import PostListCategoryView, CommentDeleteView, CommentUpdateView, PostModerateView
+from posts.views import PostListCategoryView, CommentDeleteView, CommentUpdateView, PostModerateView, \
+    PostModerateListView
 
 app_name = 'posts'
 
@@ -18,5 +19,6 @@ urlpatterns = [
     path('comment/delete/<pk>/', CommentDeleteView.as_view(), name='comment_delete'),
     path('comment/update/<pk>/', CommentUpdateView.as_view(), name='comment_update'),
 
-    path('moderate/<pk>/<mod_result>/', PostModerateView.as_view(), name='post_moderate')
+    path('moderate/<pk>/<mod_result>/', PostModerateView.as_view(), name='post_moderate'),
+    path('moderatelist/', PostModerateListView.as_view(), name='moderate_list')
 ]

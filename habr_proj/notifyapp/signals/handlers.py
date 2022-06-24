@@ -2,7 +2,7 @@ from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
 from authapp.models import HabrUser
-from notifyapp.models import NotifyPostStatus, NotifyComment, NotifyLike
+from notifyapp.models import NotifyPostStatus, NotifyComment, NotifyLike, NotifyUserStatus
 from notifyapp.services import send_notification
 from posts.models import Posts, Comment, PostsLikes
 
@@ -25,7 +25,7 @@ def notify_post_create(sender, instance, created, **kwargs):
 
 @receiver(pre_save, sender=Posts)
 def notify_post_moderated(sender, instance, **kwargs):
-    old_post = Posts.objects.get(pk=instance.pk)
+    old_post = Posts.objects.filter(pk=instance.pk).first()
     if old_post:
         old_moder_status = old_post.is_moderated
         new_moder_status = instance.is_moderated
@@ -89,3 +89,41 @@ def notify_comment_to_moder(sender, instance, created, **kwargs):
                             f' c обращением к модератору.',
                 comment=instance
             )
+
+
+@receiver(post_save, sender=HabrUser)
+def notify_user_register(sender, instance, created, **kwargs):
+    if created:
+        print('Created')
+        admin_users = HabrUser.objects.filter(is_superuser=True)
+        category = 'USR'
+        for user in admin_users:
+            notify = NotifyUserStatus.objects.create(
+                to_user=user,
+                category=category,
+                notify_body=f'Зарегистрировался новый пользователь: {instance.username}',
+                username=instance.username
+            )
+            # send_notification(notify)
+
+
+@receiver(pre_save, sender=HabrUser)
+def notify_user_activate(sender, instance, **kwargs):
+    old_user = HabrUser.objects.filter(pk=instance.pk).first()
+    if old_user:
+        old_user_status = old_user.is_active
+        new_user_status = instance.is_active
+        if old_user_status != new_user_status:
+            notify_set = NotifyUserStatus.objects.filter(username=instance.username)
+            for notify in notify_set:
+                if instance.is_active:
+                    notify.status = 'ACT'
+                    notify.is_read = False
+                    notify.notify_body = f'Пользователь {instance.username} активирован'
+                    notify.save()
+                else:
+                    notify.status = 'DEL'
+                    notify.is_read = False
+                    notify.notify_body = f'Пользователь {instance.username} удален'
+                    notify.save()
+            # send_notification(notify)

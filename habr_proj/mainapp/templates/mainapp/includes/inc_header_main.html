@@ -191,6 +191,11 @@
               <a href="{% url 'posts:post_list' %}" class="dropdown-item has-icon">
                 <i class="fas fa-bolt"></i> Посты
               </a>
+              {% if user.is_staff %}
+              <a href="{% url 'posts:moderate_list' %}" class="dropdown-item has-icon">
+                <i class="fas fa-bolt"></i> Модерация
+              </a>
+              {% endif %}
             <a href="{% url 'settings:help' %}" class="dropdown-item has-icon">
                <i class="fas fa-question"></i> Помощь
               </a>
