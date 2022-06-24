@@ -60,9 +60,11 @@
                         </div>
                     </div>
                 </div>
-                {% if user.specialization == 'Модератор' %}
+                {% if user.is_staff %}
                 <div class="buttons">
-                    <a href="{% url 'posts:post_moderate' post.pk 'ok' %}" class="btn btn-primary">Прошел модерацию</a>
+                    {% if not post.is_moderated %}
+                        <a href="{% url 'posts:post_moderate' post.pk 'ok' %}" class="btn btn-primary">Прошел модерацию</a>
+                    {% endif %}
                     <a href="{% url 'posts:post_moderate' post.pk 'bad' %}" class="btn btn-danger">Не прошел модерацию</a>
                 </div>
                 {% endif %}

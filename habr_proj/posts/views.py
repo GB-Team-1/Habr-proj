@@ -180,24 +180,27 @@ class PostModerateView(DetailView):
             post.is_moderated = True
             post.status_moderation = 'PM'
             post.save()
-            notify = NotifyPostStatus.objects.get(post=post)
-            notify.status = 'MOD'
-            notify.to_user = post.user
-            notify.is_read = False
-            notify.notify_body = f'Пост {post.title} прошел модерацию'
-            notify.save()
         else:
             post.is_moderated = False
             post.status_moderation = 'BLC'
             post.save()
-            notify = NotifyPostStatus.objects.get(post=post)
-            notify.status = 'BLC'
-            notify.to_user = post.user
-            notify.is_read = False
-            notify.notify_body = f'Пост {post.title} не прошел модерацию!'
-            notify.save()
-        # send_notification(notify)
         return HttpResponseRedirect(reverse('posts:post_detail', kwargs={'pk': self.kwargs.get('pk')}))
+
+
+class PostModerateListView(ListView):
+    model = Posts
+    template_name = 'posts/posts_moderate_list.html'
+
+    def get_queryset(self):
+        return super().get_queryset().filter(is_active=True, is_moderated=False).order_by(
+            '-created_at').select_related()
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super().get_context_data(*args, **kwargs)
+        context_data['title'] = f'Хабы на модерацию'
+        context_data['categories'] = get_categories()
+
+        return context_data
 
 
 class CommentDeleteView(DetailView):
