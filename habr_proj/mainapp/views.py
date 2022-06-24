@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.shortcuts import render
 from django.views.generic import TemplateView, ListView
 
@@ -12,7 +13,8 @@ class Index(ListView):
     paginate_by = 6
 
     def get_queryset(self):
-        return Posts.objects.filter(is_published=True, is_active=True, is_moderated=True,status_moderation=Posts.POST_MODERATE).order_by('-created_at').select_related()
+        return Posts.objects.filter(is_published=True, is_active=True, is_moderated=True,
+                                    status_moderation=Posts.POST_MODERATE).order_by('-created_at').select_related()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -23,4 +25,20 @@ class Index(ListView):
         return context
 
 
-# class AllPostsView(TemplateView):
+class SearchView(ListView):
+    model = Posts
+    template_name = 'mainapp/seacrh.html'
+
+    def get_queryset(self):
+        query = self.request.GET.get('search')
+        queryset = Posts.objects.filter(
+            (Q(title__icontains=query) | Q(body__icontains=query)) & Q(is_published=True) & Q(is_active=True) & Q(
+                is_moderated=True) & Q(status_moderation=Posts.POST_MODERATE)).order_by('-created_at').select_related()
+        print(queryset)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super(SearchView, self).get_context_data(**kwargs)
+        context['title'] = 'Результат поиска'
+        context['result'] = self.request.GET.get('search')
+        return context
