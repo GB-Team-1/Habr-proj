@@ -1,22 +1,39 @@
+from django.conf import settings
+from django.core.cache import cache
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView, DetailView
 
-from notifyapp.models import NotifyPostStatus
-from notifyapp.services import send_notification
 from posts.forms import PostCreateForm, CommentCreateForm, PostUpdateForm, CommentUpdateForm
 from posts.models import Posts, PostCategory, Comment
 
 
 def get_posts_in_category(pk):
+    if settings.LOW_CACHE:
+        key = 'posts_in_category'
+        posts_in_category = cache.get(key)
+        if posts_in_category is None:
+            posts_in_category = Posts.objects.filter(category__pk=pk,
+                                                     is_active=True,
+                                                     is_published=True,
+                                                     is_moderated=True,
+                                                     status_moderation=Posts.POST_MODERATE
+                                                     ).select_related().order_by('-created_at')
+            cache.set(key, posts_in_category)
+        return posts_in_category
     return Posts.objects.filter(category__pk=pk, is_active=True, is_published=True, is_moderated=True,
-                                status_moderation=Posts.POST_MODERATE).select_related() \
-        .order_by('-created_at')
+                                status_moderation=Posts.POST_MODERATE).select_related().order_by('-created_at')
 
 
 def get_categories():
-    # TODO Добавить кэширование
+    if settings.LOW_CACHE:
+        key = 'post_category'
+        post_category = cache.get(key)
+        if post_category is None:
+            post_category = PostCategory.objects.all()
+            cache.set(key, post_category)
+        return post_category
     return PostCategory.objects.all()
 
 

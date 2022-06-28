@@ -180,3 +180,18 @@ EMAIL_USE_SSL = True
 # EMAIL_USE_SSL = True
 
 BASE_URL = os.getenv('BASE_URL')
+
+
+if os.name == 'posix':
+    CACHE_MIDDLEWARE_ALIAS = 'default'
+    CACHE_MIDDLEWARE_SECONDS = 120
+    CACHE_MIDDLEWARE_KEY_PREFIX = 'habrproj'
+
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+            'LOCATION': '127.0.0.1:11211',
+        }
+    }
+
+LOW_CACHE = (os.getenv('LOW_CACHE', 'False') == 'True')
