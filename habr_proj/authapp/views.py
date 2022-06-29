@@ -1,5 +1,4 @@
 from django.contrib import auth
-from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.views import LoginView, LogoutView
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -8,7 +7,7 @@ from django.views import View
 from django.views.generic import CreateView, UpdateView, TemplateView, DetailView
 from authapp.forms import HabrUserLoginForm, HabrUserRegisterForm, HabrUserEditForm
 from authapp.models import HabrUser
-from authapp.services import send_verify_email
+from authapp.tasks import send_verify_email_task
 from posts.models import PostCategory, Posts
 
 
@@ -42,7 +41,7 @@ class RegisterUserView(CreateView):
         form = self.get_form()
         if form.is_valid():
             new_user = form.save()
-            # send_verify_email(new_user)
+            send_verify_email_task(new_user.uid)
             return HttpResponseRedirect(reverse('auth:login'))
         return super(RegisterUserView, self).post(request, *args, **kwargs)
 
