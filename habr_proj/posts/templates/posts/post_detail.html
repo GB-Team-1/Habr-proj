@@ -31,6 +31,32 @@
                             <div class="bullet"></div>
                             <a href="#">{{ post.created_at.date }}
                                 в {{ post.created_at.time.hour }}:{{ post.created_at.time.minute }}</a></div>
+
+                        {% if request.user in users_dislike %}
+                          <a href="#" id="dislike_block{{ posts.id }}"  class="btn btn-danger float-right ml-2" data-action="undislike" data-id="{{ post.id }}">
+                            <img id="dislike_img{{ posts.id }}" src="{% static 'assets/img/dislike.png %}" alt="dislike" width="20px">
+                            <strong id="dislike_val{{ posts.id }}">{{total_dislikes}}</strong>
+                          </a>
+                        {% else %}
+                          <a href="#" id="dislike_block{{ post.id }}"  class="btn btn-secondary float-right ml-2" data-action="dislike" data-id="{{ post.id }}">
+                            <img id="dislike_img{{ post.id }}" src="{% static 'assets/img/dislike.png %}" alt="dislike" width="20px">
+                            <strong id="dislike_val{{ post.id }}">{{total_dislikes}}</strong>
+                          </a>
+                        {% endif %}
+
+                        {% if request.user in users_like %}
+                          <a href="#" id="like_block{{ posts.id }}" class="btn btn-success float-right ml-2" data-action="unlike" data-id="{{ post.id }}">
+                            <img id="like_img{{ posts.id }}" src="{% static 'assets/img/like.png %}" alt="like" width="20px">
+                            <strong id="like_val{{ posts.id }}">{{total_likes}}</strong>
+                          </a>
+                        {% else %}
+                          <a href="#" id="like_block{{ post.id }}" class="btn btn-secondary float-right ml-2" data-action="like" data-id="{{ post.id }}">
+                            <img id="like_img{{ post.id }}" src="{% static 'assets/img/like.png %}" alt="like" width="20px">
+                            <strong id="like_val{{ post.id }}">{{total_likes}}</strong>
+                          </a>
+                        {% endif %}
+
+
                         <div class="article-title">
                             <h2><a href="{% url 'posts:post_detail' post.pk %}">{{ post.title }}</a></h2>
                         </div>
@@ -137,5 +163,59 @@
                   </div>
                 </div>
               </div>
+
+        <script type="text/javascript">
+
+            $('#like_block{{ post.id }}').on('click', function(e){
+              e.preventDefault();
+              $.post(
+                '{% url "posts:like_or_dislike" %}',
+                {id: $(this).data('id'),action: $(this).data('action')},
+                function(data){
+                  if (data['status'] == 'ok'){
+                    var previous_action = $('#like_block{{ post.id }}').data('action');
+                    var dislike_previous_action = $('#dislike_block{{ post.id }}').data('action');
+                    // Изменяем переменную действия.
+                    $('#like_block{{ post.id }}').data('action', previous_action == 'like' ?'unlike' : 'like');
+                    $('#dislike_block{{ post.id }}').data('action', 'dislike')
+                    // Изменяем цвет ссылки.
+                    $('#like_block{{ post.id }}').attr('class', previous_action == 'like' ? 'btn btn-success float-right ml-2' : 'btn btn-secondary float-right ml-2');
+                    $('#dislike_block{{ post.id }}').attr('class', 'btn btn-secondary float-right ml-2');
+                    // Обновляем общее количество лайков.
+                    var previous_likes = parseInt($('#like_val{{ post.id }}').text());
+                    $('#like_val{{ post.id }}').text(previous_action == 'like' ? previous_likes + 1 : previous_likes - 1);
+                    var previous_dislikes = parseInt($('#dislike_val{{ post.id }}').text());
+                    $('#dislike_val{{ post.id }}').text(dislike_previous_action == 'undislike' ? previous_dislikes - 1 : previous_dislikes );
+                  }
+                });
+              });
+
+              $('#dislike_block{{ post.id }}').on('click', function(e){
+                e.preventDefault();
+                $.post(
+                  '{% url "posts:like_or_dislike" %}',
+                  {id: $(this).data('id'),action: $(this).data('action')},
+                  function(data){
+                    if (data['status'] == 'ok'){
+                      var previous_action = $('#dislike_block{{ post.id }}').data('action');
+                      var like_previous_action = $('#like_block{{ post.id }}').data('action');
+                      // Изменяем переменную действия.
+                      $('#dislike_block{{ post.id }}').data('action', previous_action == 'dislike' ?'undislike' : 'dislike');
+                      $('#like_block{{ post.id }}').data('action', 'like')
+                      // Изменяем цвет ссылки.
+                      $('#dislike_block{{ post.id }}').attr('class', previous_action == 'dislike' ? 'btn btn-danger float-right ml-2' : 'btn btn-secondary float-right ml-2');
+                      $('#like_block{{ post.id }}').attr('class', 'btn btn-secondary float-right ml-2');
+                      //$('a.like').text(previous_action == 'like' ? 'Unlike' : 'Like');
+                      // Обновляем общее количество лайков.
+                      var previous_dislikes = parseInt($('#dislike_val{{ post.id }}').text());
+                      $('#dislike_val{{ post.id }}').text(previous_action == 'dislike' ? previous_dislikes + 1 : previous_dislikes - 1);
+                      var previous_likes = parseInt($('#like_val{{ post.id }}').text());
+                      $('#like_val{{ post.id }}').text(like_previous_action == 'unlike' ? previous_likes - 1 : previous_likes );
+                    }
+                  });
+                });
+
+            </script>
+
     </section>
 {% endblock %}
