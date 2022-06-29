@@ -10,5 +10,5 @@ def send_notification(notify):
         message,
         settings.EMAIL_HOST_USER,
         [notify.to_user.email],
-        fail_silently=False
+        fail_silently=False,
     )

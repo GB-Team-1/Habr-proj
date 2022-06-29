@@ -4,6 +4,8 @@ from django.dispatch import receiver
 from authapp.models import HabrUser
 from notifyapp.models import NotifyPostStatus, NotifyComment, NotifyLike, NotifyUserStatus
 from notifyapp.services import send_notification
+from notifyapp.tasks import send_notification_post, send_notification_comment, send_notification_like, \
+    send_notification_user
 from posts.models import Posts, Comment, PostsLikes
 
 
@@ -20,7 +22,7 @@ def notify_post_create(sender, instance, created, **kwargs):
                 notify_body=f'Поступил новый пост на модерацию: {instance.title}',
                 post=instance
             )
-            # send_notification(notify)
+            send_notification_post.delay(notify.uid)
 
 
 @receiver(pre_save, sender=Posts)
@@ -44,7 +46,7 @@ def notify_post_moderated(sender, instance, **kwargs):
                     notify.is_read = False
                     notify.notify_body = f'Пост {instance.title} не прошел модерацию!'
                     notify.save()
-            # send_notification(notify)
+            send_notification_post.delay(notify_set[0].uid)
 
 
 @receiver(post_save, sender=Comment)
@@ -58,7 +60,7 @@ def notify_post_comment(sender, instance, created, **kwargs):
             notify_body=f'К Хабу {instance.post.title} пользователь {instance.user} оставил комментарий',
             comment=instance
         )
-        # send_notification(notify)
+        send_notification_comment(notify.uid)
 
 
 @receiver(post_save, sender=PostsLikes)
@@ -72,7 +74,7 @@ def notify_like_post(sender, instance, created, **kwargs):
             notify_body=f'К Хабу {instance.post.title} пользователь {instance.user} поставил лайк',
             like=instance
         )
-        # send_notification(notify)
+        send_notification_like(notify.uid)
 
 
 @receiver(post_save, sender=Comment)
@@ -89,6 +91,7 @@ def notify_comment_to_moder(sender, instance, created, **kwargs):
                             f' c обращением к модератору.',
                 comment=instance
             )
+            send_notification_comment(notify.uid)
 
 
 @receiver(post_save, sender=HabrUser)
@@ -104,7 +107,7 @@ def notify_user_register(sender, instance, created, **kwargs):
                 notify_body=f'Зарегистрировался новый пользователь: {instance.username}',
                 username=instance.username
             )
-            # send_notification(notify)
+            send_notification_user(notify.uid)
 
 
 @receiver(pre_save, sender=HabrUser)
@@ -126,4 +129,4 @@ def notify_user_activate(sender, instance, **kwargs):
                     notify.is_read = False
                     notify.notify_body = f'Пользователь {instance.username} удален'
                     notify.save()
-            # send_notification(notify)
+            send_notification_user(notify_set[0].uid)
