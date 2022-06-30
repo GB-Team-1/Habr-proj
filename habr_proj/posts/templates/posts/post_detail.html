@@ -60,8 +60,9 @@
 
                         </div>
                     <ul style="list-style: none;display: flex;margin: 0;padding: 0;">
-                                   <li style="margin-right: 10px;"><i class="fas fa-comment"></i> <span>2</span></li>
-                                   <li style="margin-right: 10px;"> <i class="fas fa-heart"></i> <span>2</span></li>
+                                   <li style="margin-right: 10px;"><i class="fas fa-comment"></i> <span>{{ post.get_comments_quantity }}</span></li>
+                                   <li style="margin-right: 10px;"> <i class="fas fa-heart"></i> <span>{{ post.get_likes_quantity }}</span></li>
+                        <li style="margin-right: 10px;"> <i class="fas fa-eye"></i> <span>{{ post.views }}</span></li>
                     </ul>
                     </div>
                 </div>

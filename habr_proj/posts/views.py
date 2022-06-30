@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.core.cache import cache
+from django.db.models import F
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
@@ -35,6 +36,10 @@ def get_categories():
             cache.set(key, post_category)
         return post_category
     return PostCategory.objects.all()
+
+
+def get_comments(pk):
+    return Comment.objects.filter(post__pk=pk, is_active=True).order_by('-created_at')
 
 
 class PostCreateView(CreateView):
@@ -134,8 +139,7 @@ class PostDetailView(UpdateView):
         context_data['title'] = 'Хаб'
         context_data['post'] = self.get_queryset().first()
         context_data['comment_title'] = 'Написать комментарий'
-        context_data['comments'] = Comment.objects.filter(post__pk=self.kwargs.get('pk'), is_active=True).order_by(
-            '-created_at')
+        context_data['comments'] = get_comments(self.kwargs.get('pk'))
         return context_data
 
     def post(self, request, *args, **kwargs):
@@ -147,6 +151,12 @@ class PostDetailView(UpdateView):
             user.save()
             return HttpResponseRedirect(reverse('posts:post_detail', kwargs={'pk': self.kwargs.get('pk')}))
         return super(PostDetailView, self).post(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        post = self.get_queryset().first()
+        post.views = F('views') + 1
+        post.save()
+        return super().get(request, *args, **kwargs)
 
 
 class PostDetailProfileView(DetailView):
