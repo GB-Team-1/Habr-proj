@@ -27,12 +27,12 @@
                                     <div class="profile-widget-item-value">{{ posts_count }}</div>
                                 </div>
                                 <div class="profile-widget-item">
-                                    <div class="profile-widget-item-label">Followers</div>
-                                    <div class="profile-widget-item-value">6,8K</div>
+                                    <div class="profile-widget-item-label"><a href="{% url 'subscribe:followers' user.pk %}">Followers</a></div>
+                                    <div class="profile-widget-item-value">{{ followers }}</div>
                                 </div>
                                 <div class="profile-widget-item">
-                                    <div class="profile-widget-item-label">Following</div>
-                                    <div class="profile-widget-item-value">2,1K</div>
+                                    <div class="profile-widget-item-label"><a href="{% url 'subscribe:view_subscribes' user.pk %}">Following</a></div>
+                                    <div class="profile-widget-item-value">{{ following }}</div>
                                 </div>
                             </div>
                         </div>

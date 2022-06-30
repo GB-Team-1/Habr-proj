@@ -84,7 +84,7 @@
                             {% endif %}
                             {{ form.media }}
                             {{ form.as_p }}
-                            <input type="submit" class="btn btn-primary" value="Сохранить" style="margin-top: 20px;">
+                            <input type="submit" class="btn btn-primary add-comment" value="Сохранить" style="margin-top: 20px;">
                         </form>
                     </div>
                 </div>
@@ -138,4 +138,7 @@
                 </div>
               </div>
     </section>
+{% endblock %}
+{% block ajax %}
+    <script src="{% static 'js/addComments.js' %}"></script>
 {% endblock %}

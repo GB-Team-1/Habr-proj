@@ -28,12 +28,12 @@
                         <div class="profile-widget-item-value">{{ count_posts }}</div>
                       </div>
                       <div class="profile-widget-item">
-                        <div class="profile-widget-item-label">Followers</div>
-                        <div class="profile-widget-item-value">6,8K</div>
+                        <div class="profile-widget-item-label"><a href="{% url 'subscribe:followers' user_detail.pk %}">Followers</a></div>
+                        <div class="profile-widget-item-value">{{ followers }}</div>
                       </div>
                       <div class="profile-widget-item">
-                        <div class="profile-widget-item-label">Following</div>
-                        <div class="profile-widget-item-value">2,1K</div>
+                        <div class="profile-widget-item-label"><a href="{% url 'subscribe:view_subscribes' user_detail.pk %}">Following</a></div>
+                        <div class="profile-widget-item-value">{{ following }}</div>
                       </div>
                     </div>
                   </div>
@@ -48,11 +48,12 @@
                   </div>
 
                   <div class="card-footer text-center pt-0">
-                    <div class="font-weight-bold mb-2 text-small">Подписаться на {{ user_detail.first_name }} {{ user_detail.last_name }}</div>
-                    <a href="#" class="btn btn-primary mt-3 follow-btn"
-                                           data-follow-action="alert('follow clicked');"
-                                           data-unfollow-action="alert('unfollow clicked');">Подписаться</a>
-
+{#                    <div class="font-weight-bold mb-2 text-small">Подписаться на {{ user_detail.first_name }} {{ user_detail.last_name }}</div>#}
+                      {% if is_subscriber %}
+                    <a href="{% url 'subscribe:unsubscribes' user_detail.pk %}" class="btn btn-danger mt-3">Отписаться</a>
+                      {% else %}
+                       <a href="{% url 'subscribe:subscribes' user_detail.pk %}" class="btn btn-primary mt-3">Подписаться</a>
+                      {% endif %}
                   </div>
                 </div>
               </div>

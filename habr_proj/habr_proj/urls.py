@@ -27,6 +27,7 @@ urlpatterns = [
     path('auth/', include('authapp.urls', namespace='auth')),
     path('posts/', include('posts.urls', namespace='posts')),
     path('notify/', include('notifyapp.urls', namespace='notify')),
+    path('subscribe/', include('subscribe.urls', namespace='subscribe')),
     path('settings/', include('settings.urls', namespace='settings')),
 ]
 if settings.DEBUG:
