@@ -9,6 +9,7 @@ from authapp.forms import HabrUserLoginForm, HabrUserRegisterForm, HabrUserEditF
 from authapp.models import HabrUser
 from authapp.tasks import send_verify_email_task
 from posts.models import PostCategory, Posts
+from subscribe.models import SubscribeModel
 
 
 class LoginUserView(LoginView):
@@ -71,6 +72,8 @@ class UpdateProfileView(UpdateView):
         context['title'] = 'Редактирование профиля'
         context['categories'] = PostCategory.objects.filter()
         context['posts_count'] = Posts.objects.filter(user=self.request.user, is_published=True,is_active=True).count()
+        context['followers'] = SubscribeModel.objects.filter(user=self.request.user).count()
+        context['following'] = SubscribeModel.objects.filter(subscriber=self.request.user).count()
         return context
 
     def get(self, request, *args, **kwargs):
@@ -91,4 +94,12 @@ class UserProfileDetailView(DetailView):
         context['user_detail'] = self.get_queryset().first()
         context['count_posts'] = Posts.objects.filter(user__pk=self.kwargs.get('pk'), is_published=True, is_active=True).count()
         context['posts'] = Posts.objects.filter(user__pk=self.kwargs.get('pk'), is_published=True, is_active=True).order_by('-created_at')
+        subscriber = SubscribeModel.objects.filter(user=self.kwargs.get('pk'), subscriber=self.request.user)
+        if subscriber:
+            context['is_subscriber'] = True
+        else:
+            context['is_subscriber'] = False
+
+        context['followers'] = SubscribeModel.objects.filter(user=self.kwargs.get('pk')).count()
+        context['following'] = SubscribeModel.objects.filter(subscriber=self.kwargs.get('pk')).count()
         return context

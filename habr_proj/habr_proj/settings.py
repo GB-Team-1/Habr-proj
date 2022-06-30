@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'posts',
     'ckeditor',
     'notifyapp',
-    'settings'
+    'settings',
+    'subscribe'
 ]
 
 MIDDLEWARE = [
