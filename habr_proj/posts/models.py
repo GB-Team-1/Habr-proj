@@ -39,7 +39,9 @@ class Posts(models.Model):
     image = models.ImageField(upload_to='posts', blank=True, verbose_name='Изображение')
     tags = models.CharField(max_length=256, blank=True, verbose_name='Тэги')
     body = RichTextField(verbose_name='Текст Хаба', )
-    status_moderation = models.CharField(max_length=10, choices=POST_MODERATE_STATUSES, default=POST_TO_MODERATION, verbose_name='Статус модерации')
+    status_moderation = models.CharField(max_length=10, choices=POST_MODERATE_STATUSES,
+                                         default=POST_TO_MODERATION, verbose_name='Статус модерации')
+    views = models.BigIntegerField(default=0, verbose_name='Количество просмотров')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Создан')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Обновлен')
     is_moderated = models.BooleanField(default=False, verbose_name='Проверен')
@@ -65,6 +67,12 @@ class Posts(models.Model):
         if self.is_published:
             return 'Опубликован'
         return 'Не опубликован'
+
+    def get_comments_quantity(self):
+        return Comment.objects.filter(post=self, is_active=True).count()
+
+    def get_likes_quantity(self):
+        return PostsLikes.objects.filter(post=self).count()
 
 
 class Links(models.Model):
