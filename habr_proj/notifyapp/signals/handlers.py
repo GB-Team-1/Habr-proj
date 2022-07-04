@@ -129,4 +129,4 @@ def notify_user_activate(sender, instance, **kwargs):
                     notify.is_read = False
                     notify.notify_body = f'Пользователь {instance.username} удален'
                     notify.save()
-            send_notification_user(notify_set[0].uid)
+                send_notification_user(notify.uid)
