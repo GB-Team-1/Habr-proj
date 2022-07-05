@@ -1,4 +1,5 @@
 from django.contrib import auth
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -82,7 +83,8 @@ class UpdateProfileView(UpdateView):
         return super(UpdateProfileView, self).get(request, *args, **kwargs)
 
 
-class UserProfileDetailView(DetailView):
+class UserProfileDetailView(LoginRequiredMixin, DetailView):
+    login_url = reverse_lazy('authapp:login')
     template_name = 'authapp/profile_detail.html'
 
     def get_queryset(self):
