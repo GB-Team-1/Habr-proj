@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from authapp.forms import HabrUserLoginForm, HabrUserRegisterForm
+from authapp.forms import HabrUserLoginForm, HabrUserRegisterForm, HabrUserEditForm
 from authapp.models import HabrUser
 
 
@@ -81,3 +81,42 @@ class HabrUserRegisterFormTest(TestCase):
         form.save()
         user = HabrUser.objects.get(username=self.form_data['username'])
         self.assertFalse(user.is_active)
+
+
+class HabrUserEditFormTest(TestCase):
+    def test_username_field_label(self):
+        form = HabrUserEditForm()
+        self.assertTrue(form.fields['username'].label is None or form.fields['username'].label == 'Имя пользователя')
+
+    def test_firstname_field_label(self):
+        form = HabrUserEditForm()
+        self.assertTrue(form.fields['first_name'].label is None or form.fields['first_name'].label == 'Имя')
+
+    def test_lastname_field_label(self):
+        form = HabrUserEditForm()
+        self.assertTrue(form.fields['last_name'].label is None or form.fields['last_name'].label == 'Фамилия')
+
+    def test_email_field_label(self):
+        form = HabrUserEditForm()
+        self.assertTrue(form.fields['email'].label is None or form.fields['email'].label == 'Адрес электронной почты')
+
+    def test_birthday_field_label(self):
+        form = HabrUserEditForm()
+        self.assertTrue(form.fields['birthday'].label is None or form.fields['birthday'].label == 'Дата рождения')
+
+    def test_avatar_field_label(self):
+        form = HabrUserEditForm()
+        self.assertTrue(form.fields['avatar'].label is None or form.fields['avatar'].label == 'Аватар')
+
+    def test_specialization_field_label(self):
+        form = HabrUserEditForm()
+        self.assertTrue(form.fields['specialization'].label is None or
+                        form.fields['specialization'].label == 'Специализация')
+
+    def test_about_me_field_label(self):
+        form = HabrUserEditForm()
+        self.assertTrue(form.fields['about_me'].label is None or form.fields['about_me'].label == 'Обо мне')
+
+    def test_password_field_label(self):
+        form = HabrUserEditForm()
+        self.assertTrue(form.fields['password'].label is None or form.fields['password'].label == 'Пароль')

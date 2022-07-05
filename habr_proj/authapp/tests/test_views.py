@@ -97,3 +97,24 @@ class UpdateProfileViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(user.last_name, 'Petrov')
 
+
+class UserProfileDetailViewTest(TestCase):
+    def setUp(self) -> None:
+        self.credentials = {
+            'username': 'test_user6',
+            'password': 'test1234567',
+            'email': 'user6@test.com',
+            'first_name': 'Ivan',
+            'last_name': 'Ivanov'
+        }
+        self.user = HabrUser.objects.create_user(**self.credentials)
+
+    def test_user_detail_view_anonymous(self):
+        response = self.client.get(f'/auth/profile/{self.user.uid}/')
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith('/auth/login/'))
+
+    def test_user_detail_with_authenticated(self):
+        self.client.login(username=self.credentials['username'], password=self.credentials['password'])
+        response = self.client.get(f'/auth/profile/{self.user.uid}/')
+        self.assertEqual(response.status_code, 200)
