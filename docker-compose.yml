@@ -1,17 +1,23 @@
 version: '3.1'
 
 services:
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - 6379:6379
   db:
     image: postgres:13.0-alpine
     container_name: db
+    restart: always
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
       - ./habr_proj/.env.db
   web:
     build: ./habr_proj
+    restart: always
     container_name: web
-#    command: bash entrypoint.sh
     command: gunicorn habr_proj.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - static_volume:/home/habr_proj/web/static
@@ -22,8 +28,10 @@ services:
       - ./habr_proj/.env
     depends_on:
       - db
+      - redis
   nginx:
     build: ./nginx
+    restart: always
     volumes:
       - static_volume:/home/habr_proj/web/static
       - media_volume:/home/habr_proj/web/media
@@ -35,3 +43,4 @@ volumes:
   postgres_data:
   static_volume:
   media_volume:
+  celery_volume:
