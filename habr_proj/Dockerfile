@@ -41,6 +41,8 @@ RUN chmod +x $HABR_HOME/entrypoint.sh
 
 COPY . $HABR_HOME
 
+RUN python manage.py collectstatic --noinput
+
 RUN chown -R habr_proj:habr_proj $HABR_HOME
 
 USER habr_proj
