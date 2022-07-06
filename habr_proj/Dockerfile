@@ -46,4 +46,4 @@ RUN chown -R habr_proj:habr_proj $HABR_HOME
 USER habr_proj
 
 RUN sleep 3
-#ENTRYPOINT ["/home/habr_proj/web/entrypoint.sh"]
+ENTRYPOINT ["/home/habr_proj/web/entrypoint.sh"]

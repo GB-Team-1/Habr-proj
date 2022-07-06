@@ -179,17 +179,17 @@ BASE_URL = os.getenv('BASE_URL')
 CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
 CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
 
-if os.name == 'posix':
-    CACHE_MIDDLEWARE_ALIAS = 'default'
-    CACHE_MIDDLEWARE_SECONDS = 120
-    CACHE_MIDDLEWARE_KEY_PREFIX = 'habrproj'
-
-    CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-            'LOCATION': '127.0.0.1:11211',
-        }
-    }
+# if os.name == 'posix':
+#     CACHE_MIDDLEWARE_ALIAS = 'default'
+#     CACHE_MIDDLEWARE_SECONDS = 120
+#     CACHE_MIDDLEWARE_KEY_PREFIX = 'habrproj'
+#
+#     CACHES = {
+#         'default': {
+#             'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+#             'LOCATION': '127.0.0.1:11211',
+#         }
+#     }
 
 LOW_CACHE = (os.getenv('LOW_CACHE', 'False') == 'True')
 
