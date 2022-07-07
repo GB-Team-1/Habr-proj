@@ -33,6 +33,7 @@ WORKDIR $HABR_HOME
 RUN apk update && apk add libpq postgresql-dev gcc python3-dev musl-dev postgresql-contrib
 #COPY --from=builder /usr/src/habr_proj/wheels /wheels
 COPY . .
+RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 
 COPY ./entrypoint.sh $HABR_HOME
@@ -46,7 +47,5 @@ RUN python manage.py collectstatic --noinput
 RUN chown -R habr_proj:habr_proj $HABR_HOME
 
 USER habr_proj
-
-RUN celery -A habr_proj worker --loglevel=info
 
 ENTRYPOINT ["/home/habr_proj/web/entrypoint.sh"]
