@@ -47,4 +47,6 @@ RUN chown -R habr_proj:habr_proj $HABR_HOME
 
 USER habr_proj
 
+RUN celery -A habr_proj worker --loglevel=info
+
 ENTRYPOINT ["/home/habr_proj/web/entrypoint.sh"]
