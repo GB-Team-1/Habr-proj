@@ -47,6 +47,8 @@ class Posts(models.Model):
     is_moderated = models.BooleanField(default=False, verbose_name='Проверен')
     is_published = models.BooleanField(default=False, verbose_name='Опубликован')
     is_active = models.BooleanField(default=True, verbose_name='Активен')
+    post_like = models.ManyToManyField(HabrUser, related_name='post_liked', blank=True)
+    post_dislike = models.ManyToManyField(HabrUser, related_name='post_disliked', blank=True)
 
     class Meta:
         verbose_name = 'Хаб'
@@ -72,7 +74,7 @@ class Posts(models.Model):
         return Comment.objects.filter(post=self, is_active=True).count()
 
     def get_likes_quantity(self):
-        return PostsLikes.objects.filter(post=self).count()
+        return PostsLikes.objects.filter(for_post=self).count()
 
 
 class Links(models.Model):
@@ -97,9 +99,15 @@ class Comment(models.Model):
 
 
 class PostsLikes(models.Model):
+    LIKE_OR_DISLIKE_CHOICES = (
+        ("LIKE", "like"),
+        ("DISLIKE", "dislike"),
+        (None, "None")
+    )
     uid = models.UUIDField(primary_key=True, default=uuid4)
-    post = models.ForeignKey(Posts, on_delete=models.CASCADE, verbose_name='Хаб')
-    user = models.ForeignKey(HabrUser, on_delete=models.CASCADE, verbose_name='Пользователь')
+    user = models.ForeignKey(HabrUser, on_delete=models.CASCADE)
+    for_post = models.ForeignKey(Posts, default=1, on_delete=models.CASCADE)
+    like_or_dislike = models.CharField(max_length=7, choices=LIKE_OR_DISLIKE_CHOICES, default=None)
 
     class Meta:
         verbose_name = 'Лайк'

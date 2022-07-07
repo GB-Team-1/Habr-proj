@@ -1,13 +1,14 @@
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
 from django.db.models import F
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView, DetailView
 
 from posts.forms import PostCreateForm, CommentCreateForm, PostUpdateForm, CommentUpdateForm
-from posts.models import Posts, PostCategory, Comment
+from posts.models import Posts, PostCategory, Comment, PostsLikes
 
 
 def get_posts_in_category(pk):
@@ -253,3 +254,35 @@ class CommentUpdateView(UpdateView):
     def get_success_url(self):
         comment = self.get_queryset().first()
         return reverse_lazy('posts:post_detail', kwargs={'pk': comment.post.pk})
+
+
+@login_required(login_url='/')
+def like_or_dislike(request):
+    post_id = request.POST.get('uid')
+    action = request.POST.get('action')
+    if post_id and action:
+        try:
+            post = Posts.objects.get(id=post_id)
+            if action == 'like':
+                post.post_like.add(request.user)
+            else:
+                post.post_like.remove(request.user)
+            if action == 'dislike':
+                post.post_dislike.add(request.user)
+            else:
+                post.post_dislike.remove(request.user)
+                return JsonResponse({'status': 'ok'})
+        except:
+            pass
+    return JsonResponse({'status': 'ok'})
+
+
+@login_required(login_url='/')
+def user_like(request):
+    likes = PostsLikes.objects.all()
+    for like in likes:
+        if like.like_or_dislike == "like":
+            like.for_post.post_like.add(like.user)
+        if like.like_or_dislike == "dislike":
+            like.for_post.post_dislike.add(like.user)
+    return HttpResponse("Complete")
