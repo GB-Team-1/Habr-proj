@@ -52,6 +52,8 @@ services:
   dashboard:
     build: ./habr_proj
     command: flower -A habr-proj --port=5555 --broker=redis://redis:6379/0
+    ports:
+      - 5555:5555
     env_file:
       - ./habr_proj/.env
     depends_on:
