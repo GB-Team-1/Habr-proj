@@ -39,6 +39,25 @@ services:
       - 80:80
     depends_on:
       - web
+  celery:
+    build: ./habr_proj
+    restart: always
+    command: celery -A habr_proj worker -l info
+    volumes:
+      - celery_volume:/usr/src/app/
+    env_file:
+      - ./habr_proj/.env
+    depends_on:
+      - redis
+  dashboard:
+    build: ./habr_proj
+    command: flower -A habr-proj --port=5555 --broker=redis://redis:6379/0
+    env_file:
+      - ./habr_proj/.env
+    depends_on:
+      - web
+      - redis
+      - celery
 volumes:
   postgres_data:
   static_volume:
