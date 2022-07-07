@@ -10,11 +10,16 @@ fake = Faker()
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-    #     HabrUser.objects.create_superuser(
-    #         username=settings.ADMIN_USERNAME,
-    #         email=settings.ADMIN_EMAIL,
-    #         password=settings.ADMIN_PASSWORD
-    #     )
+        try:
+            user = HabrUser.objects.get(username=settings.ADMIN_USERNAME)
+            user.delete()
+        except HabrUser.DoesNotExist:
+            print('database is empty')
+        HabrUser.objects.create_superuser(
+            username=settings.ADMIN_USERNAME,
+            email=settings.ADMIN_EMAIL,
+            password=settings.ADMIN_PASSWORD
+        )
         PostCategory.objects.all().delete()
         PostCategory.objects.create(name='Дизайн').save()
         PostCategory.objects.create(name='Веб-разработка').save()
