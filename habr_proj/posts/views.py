@@ -1,13 +1,14 @@
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
 from django.db.models import F
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView, DetailView
 
 from posts.forms import PostCreateForm, CommentCreateForm, PostUpdateForm, CommentUpdateForm
-from posts.models import Posts, PostCategory, Comment
+from posts.models import Posts, PostCategory, Comment, PostsLikes
 
 
 def get_posts_in_category(pk):
@@ -253,3 +254,28 @@ class CommentUpdateView(UpdateView):
     def get_success_url(self):
         comment = self.get_queryset().first()
         return reverse_lazy('posts:post_detail', kwargs={'pk': comment.post.pk})
+
+
+@login_required(login_url='/auth/login/')
+def like_or_dislike(request, pk):
+    if request.is_ajax():
+        post = Posts.objects.get(pk=pk)
+        like = PostsLikes.objects.filter(for_post=post, user=request.user).first()
+        if like:
+            if like.is_like:
+                print('DISLIKE')
+                like.is_like = False
+                post.post_like.remove(request.user)
+            else:
+                print('LIKE')
+                like.is_like = True
+                post.post_like.add(request.user)
+            post.save()
+            like.save()
+        else:
+            PostsLikes.objects.create(for_post=post, user=request.user)
+        like = PostsLikes.objects.filter(for_post=post, user=request.user).first()
+        return JsonResponse({
+            'is_like': like.is_like,
+            'likes': post.get_likes_quantity()
+        })

@@ -66,12 +66,12 @@ def notify_post_comment(sender, instance, created, **kwargs):
 @receiver(post_save, sender=PostsLikes)
 def notify_like_post(sender, instance, created, **kwargs):
     if created:
-        user = instance.post.user
+        user = instance.for_post.user
         category = 'LK'
         notify = NotifyLike.objects.create(
             to_user=user,
             category=category,
-            notify_body=f'К Хабу {instance.post.title} пользователь {instance.user} поставил лайк',
+            notify_body=f'К Хабу {instance.for_post.title} пользователь {instance.user} поставил лайк',
             like=instance
         )
         send_notification_like(notify.uid)
