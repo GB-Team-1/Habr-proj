@@ -48,7 +48,6 @@ class Posts(models.Model):
     is_published = models.BooleanField(default=False, verbose_name='Опубликован')
     is_active = models.BooleanField(default=True, verbose_name='Активен')
     post_like = models.ManyToManyField(HabrUser, related_name='post_liked', blank=True)
-    post_dislike = models.ManyToManyField(HabrUser, related_name='post_disliked', blank=True)
 
     class Meta:
         verbose_name = 'Хаб'
@@ -74,7 +73,11 @@ class Posts(models.Model):
         return Comment.objects.filter(post=self, is_active=True).count()
 
     def get_likes_quantity(self):
-        return PostsLikes.objects.filter(for_post=self).count()
+        return PostsLikes.objects.filter(for_post=self, is_like=True).count()
+
+    def get_user_like(self):
+
+        return self.post_like.all()
 
 
 class Links(models.Model):

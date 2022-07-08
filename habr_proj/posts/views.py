@@ -256,40 +256,26 @@ class CommentUpdateView(UpdateView):
         return reverse_lazy('posts:post_detail', kwargs={'pk': comment.post.pk})
 
 
-@login_required(login_url='/')
+@login_required(login_url='/auth/login/')
 def like_or_dislike(request, pk):
     if request.is_ajax():
-        print(request.user)
-        print(pk)
+        post = Posts.objects.get(pk=pk)
+        like = PostsLikes.objects.filter(for_post=post, user=request.user).first()
+        if like:
+            if like.is_like:
+                print('DISLIKE')
+                like.is_like = False
+                post.post_like.remove(request.user)
+            else:
+                print('LIKE')
+                like.is_like = True
+                post.post_like.add(request.user)
+            post.save()
+            like.save()
+        else:
+            PostsLikes.objects.create(for_post=post, user=request.user)
+        like = PostsLikes.objects.filter(for_post=post, user=request.user).first()
         return JsonResponse({
-            'is_like': True,
-            'likes': 10
+            'is_like': like.is_like,
+            'likes': post.get_likes_quantity()
         })
-    # post_id = request.POST.get('uid')
-    # action = request.POST.get('action')
-    # if post_id and action:
-    #     try:
-    #         post = Posts.objects.get(id=post_id)
-    #         if action == 'like':
-    #             post.post_like.add(request.user)
-    #         else:
-    #             post.post_like.remove(request.user)
-    #         if action == 'dislike':
-    #             post.post_dislike.add(request.user)
-    #         else:
-    #             post.post_dislike.remove(request.user)
-    #             return JsonResponse({'status': 'ok'})
-    #     except:
-    #         pass
-    # return JsonResponse({'status': 'ok'})
-
-
-@login_required(login_url='/')
-def user_like(request):
-    likes = PostsLikes.objects.all()
-    for like in likes:
-        if like.like_or_dislike == "like":
-            like.for_post.post_like.add(like.user)
-        if like.like_or_dislike == "dislike":
-            like.for_post.post_dislike.add(like.user)
-    return HttpResponse("Complete")
