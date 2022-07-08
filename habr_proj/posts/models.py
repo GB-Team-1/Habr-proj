@@ -99,15 +99,10 @@ class Comment(models.Model):
 
 
 class PostsLikes(models.Model):
-    LIKE_OR_DISLIKE_CHOICES = (
-        ("LIKE", "like"),
-        ("DISLIKE", "dislike"),
-        (None, "None")
-    )
     uid = models.UUIDField(primary_key=True, default=uuid4)
     user = models.ForeignKey(HabrUser, on_delete=models.CASCADE)
     for_post = models.ForeignKey(Posts, default=1, on_delete=models.CASCADE)
-    like_or_dislike = models.CharField(max_length=7, choices=LIKE_OR_DISLIKE_CHOICES, default=None)
+    is_like = models.BooleanField(default=True, verbose_name='Флаг лайк')
 
     class Meta:
         verbose_name = 'Лайк'

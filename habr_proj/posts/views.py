@@ -257,24 +257,31 @@ class CommentUpdateView(UpdateView):
 
 
 @login_required(login_url='/')
-def like_or_dislike(request):
-    post_id = request.POST.get('uid')
-    action = request.POST.get('action')
-    if post_id and action:
-        try:
-            post = Posts.objects.get(id=post_id)
-            if action == 'like':
-                post.post_like.add(request.user)
-            else:
-                post.post_like.remove(request.user)
-            if action == 'dislike':
-                post.post_dislike.add(request.user)
-            else:
-                post.post_dislike.remove(request.user)
-                return JsonResponse({'status': 'ok'})
-        except:
-            pass
-    return JsonResponse({'status': 'ok'})
+def like_or_dislike(request, pk):
+    if request.is_ajax():
+        print(request.user)
+        print(pk)
+        return JsonResponse({
+            'is_like': True,
+            'likes': 10
+        })
+    # post_id = request.POST.get('uid')
+    # action = request.POST.get('action')
+    # if post_id and action:
+    #     try:
+    #         post = Posts.objects.get(id=post_id)
+    #         if action == 'like':
+    #             post.post_like.add(request.user)
+    #         else:
+    #             post.post_like.remove(request.user)
+    #         if action == 'dislike':
+    #             post.post_dislike.add(request.user)
+    #         else:
+    #             post.post_dislike.remove(request.user)
+    #             return JsonResponse({'status': 'ok'})
+    #     except:
+    #         pass
+    # return JsonResponse({'status': 'ok'})
 
 
 @login_required(login_url='/')
