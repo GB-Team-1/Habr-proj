@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.cache import cache
 from django.db.models import F
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
@@ -43,7 +44,7 @@ def get_comments(pk):
     return Comment.objects.filter(post__pk=pk, is_active=True).order_by('-created_at')
 
 
-class PostCreateView(CreateView):
+class PostCreateView(LoginRequiredMixin, CreateView):
     model = Posts
     form_class = PostCreateForm
     template_name = 'posts/posts_form.html'
@@ -66,7 +67,7 @@ class PostCreateView(CreateView):
         return super(PostCreateView, self).post(request, *args, **kwargs)
 
 
-class PostListView(ListView):
+class PostListView(LoginRequiredMixin, ListView):
     model = Posts
 
     def get_queryset(self):
@@ -81,12 +82,12 @@ class PostListView(ListView):
         return context_data
 
 
-class PostDeleteView(DeleteView):
+class PostDeleteView(LoginRequiredMixin, DeleteView):
     model = Posts
     success_url = reverse_lazy('posts:post_list')
 
 
-class PostUpdateView(UpdateView):
+class PostUpdateView(LoginRequiredMixin, UpdateView):
     model = Posts
     template_name = 'posts/posts_form_update.html'
     form_class = PostUpdateForm
@@ -112,7 +113,7 @@ class PostUpdateView(UpdateView):
     #     return super(PostUpdateView, self).post(request, *args, **kwargs)
 
 
-class PostPublishView(DetailView):
+class PostPublishView(LoginRequiredMixin, DetailView):
 
     def get_queryset(self):
         return Posts.objects.filter(pk=self.kwargs.get('pk'))
@@ -144,13 +145,16 @@ class PostDetailView(UpdateView):
         return context_data
 
     def post(self, request, *args, **kwargs):
+        reverse_param = reverse('posts:post_detail', kwargs={'pk': self.kwargs.get('pk')})
+        if not self.request.user.is_authenticated:
+            return HttpResponseRedirect('%s?next=%s' % (reverse('auth:login'), reverse_param))
         form = self.get_form()
         if form.is_valid():
             user = form.save(commit=False)
             user.user = request.user
             user.post = self.get_queryset()[0]
             user.save()
-            return HttpResponseRedirect(reverse('posts:post_detail', kwargs={'pk': self.kwargs.get('pk')}))
+            return HttpResponseRedirect(reverse_param)
         return super(PostDetailView, self).post(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
@@ -196,7 +200,7 @@ class PostListCategoryView(ListView):
         return context_data
 
 
-class PostModerateView(DetailView):
+class PostModerateView(LoginRequiredMixin, DetailView):
 
     def get_queryset(self):
         return Posts.objects.filter(pk=self.kwargs.get('pk'))
@@ -215,7 +219,7 @@ class PostModerateView(DetailView):
         return HttpResponseRedirect(reverse('posts:post_detail', kwargs={'pk': self.kwargs.get('pk')}))
 
 
-class PostModerateListView(ListView):
+class PostModerateListView(LoginRequiredMixin, ListView):
     model = Posts
     template_name = 'posts/posts_moderate_list.html'
 
@@ -231,7 +235,7 @@ class PostModerateListView(ListView):
         return context_data
 
 
-class CommentDeleteView(DetailView):
+class CommentDeleteView(LoginRequiredMixin, DetailView):
     model = Comment
 
     def get_queryset(self):
@@ -244,7 +248,7 @@ class CommentDeleteView(DetailView):
         return HttpResponseRedirect(reverse('posts:post_detail', kwargs={'pk': comment.post.pk}))
 
 
-class CommentUpdateView(UpdateView):
+class CommentUpdateView(LoginRequiredMixin, UpdateView):
     form_class = CommentUpdateForm
     template_name = 'posts/post_detail.html'
 
