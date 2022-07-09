@@ -2,6 +2,7 @@ from uuid import uuid4
 
 from ckeditor.fields import RichTextField
 from django.db import models
+from django.urls import reverse
 
 from authapp.models import HabrUser
 
@@ -76,8 +77,10 @@ class Posts(models.Model):
         return PostsLikes.objects.filter(for_post=self, is_like=True).count()
 
     def get_user_like(self):
-
         return self.post_like.all()
+
+    def get_absolute_url(self):
+        return reverse('posts:post_detail', kwargs={'pk': self.pk})
 
 
 class Links(models.Model):

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
@@ -81,6 +82,7 @@ def notify_like_post(sender, instance, created, **kwargs):
 def notify_comment_to_moder(sender, instance, created, **kwargs):
     if created and '@moderator' in instance.comment_body:
         moder_users = HabrUser.objects.filter(is_staff=True)
+        print(settings.BASE_URL)
         category = 'CMT'
         for user in moder_users:
             notify = NotifyComment.objects.create(
@@ -88,7 +90,8 @@ def notify_comment_to_moder(sender, instance, created, **kwargs):
                 to_moder=True,
                 category=category,
                 notify_body=f'К Хабу {instance.post.title} пользователь {instance.user} оставил комментарий'
-                            f' c обращением к модератору.',
+                            f' c обращением к модератору.\n'
+                            f'Ссылка на Хаб: {settings.BASE_URL}{instance.post.get_absolute_url()}',
                 comment=instance
             )
             send_notification_comment(notify.uid)
