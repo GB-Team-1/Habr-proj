@@ -1,0 +1,21 @@
+{% extends 'mainapp/new_base.html' %}
+{% load static %}
+
+{% block content %}
+    <section class="section">
+        <div class="">
+            <article class="article article-style-c">
+                <div class="article-header">
+                    <div class="article-details">
+                        <div class="article-category"><a href="#">{{ notify_item.get_category_display }}</a>
+                            <div class="bullet"></div>
+                            <a href="#">{{ notify_item.created_at.date }}
+                                в {{ notify_item.created_at.time.hour }}:{{notify_item.created_at.time.minute }}</a></div>
+                        <p >
+                            {{ notify_item.notify_body|safe }}</p>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+{% endblock %}

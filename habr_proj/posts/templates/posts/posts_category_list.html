@@ -1,0 +1,100 @@
+{% extends 'mainapp/new_base.html' %}
+{% load static %}
+
+
+{% block content %}
+    <section class="section">
+        {#          <div class="section-header">#}
+        {#            <h1>Top Navigation</h1>#}
+        {#            <div class="section-header-breadcrumb">#}
+        {#              <div class="breadcrumb-item active"><a href="#">Dashboard</a></div>#}
+        {#              <div class="breadcrumb-item"><a href="#">Layout</a></div>#}
+        {#              <div class="breadcrumb-item">Top Navigation</div>#}
+        {#            </div>#}
+        {#          </div>#}
+        <div class="section-header">
+            <h1>{{ category_name }}</h1>
+        </div>
+        <div class="row">
+            {% for post in object_list %}
+                <div class="col-12 col-md-4 col-lg-4">
+                    <article class="article article-style-c" style="height: 500px">
+                        <div class="article-header">
+                            {% if not post.image %}
+                                <div class="article-image" data-background="{% static 'assets/img/news/img13.jpg' %}">
+                            {% else %}
+                                <div class="article-image" data-background="/media/{{ post.image }}">
+                            {% endif %}
+                            </div>
+                            </div>
+                            <div class="article-details">
+                                <div class="article-category"><a
+                                        href="{% url 'posts:post_category' post.category.pk %}">{{ post.category.name }}</a>
+                                    <div class="bullet"></div>
+                                    <a href="#">{{ post.created_at.date }}
+                                        в {{ post.created_at.time.hour }}:{{ post.created_at.time.minute }}</a></div>
+                                <div class="article-title">
+                                    <h2><a href="{% url 'posts:post_detail' post.pk %}">{{ post.title }}</a></h2>
+                                </div>
+                                 <div style="overflow: hidden;display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;line-height: 1.3em;height: 3.9em;">
+                                {{ post.body | safe}}
+                            </div>
+                                <div class="article-user">
+                                    <img alt="image" src="{% static 'assets/img/avatar/avatar-1.png' %}">
+                                    <div class="article-user-details">
+                                        <div class="user-detail-name">
+                                            {% if post.user.pk == user.pk %}
+                                                <a href="{% url 'auth:profile' %}">{{ post.user.username }}</a>
+                                            {% else %}
+                                                <a href="{% url 'auth:user_profile' post.user.pk %}">{{ post.user.username }}</a>
+                                            {% endif %}
+                                        </div>
+                                        {% if post.user.specialization %}
+                                            <div class="text-job">{{ post.user.specialization }}</div>
+                                        {% else %}
+                                            <div class="text-job"></div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                    </article>
+                </div>
+            {% endfor %}
+
+        </div>
+        <nav aria-label="Page navigation ">
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="{% url 'posts:post_category' category_name.pk %}?page=1">
+                            Первая
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="{% url 'posts:post_category' category_name.pk %}?page={{ page_obj.previous_page_number }}">
+                            Предыдущая
+                        </a>
+                    </li>
+                {% endif %}
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                         <li class="page-item active"><a class="page-link" href="{% url 'posts:post_category' category_name.pk %}?page={{ num }}">{{ num }}</a></li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <li class="page-item"><a class="page-link" href="{% url 'posts:post_category' category_name.pk %}?page={{ num }}">{{ num }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="{% url 'posts:post_category' category_name.pk %}?page={{ page_obj.next_page_number }}">
+                            Следующая
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="{% url 'posts:post_category' category_name.pk %}?page={{ page_obj.paginator.num_pages }}">
+                            Последняя
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </section>
+{% endblock %}

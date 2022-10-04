@@ -1,0 +1,90 @@
+{% extends 'mainapp/new_base.html' %}
+{% load static %}
+
+{% block content %}
+    <section class="section">
+        <section class="section"></section>
+        <div class="section-header">
+            <h1>Ваши уведомления, {% if user.first_name %}
+                {{ user.first_name|title }}
+            {% else %}
+                Пользователь
+            {% endif %}</h1>
+
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item active"><a href="{% url 'main' %}">Главная</a></div>
+                <div class="breadcrumb-item">Ваши уведомления</div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Все уведомления</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="float-right">
+                            <form>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Search">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary"><i class="fas fa-search"></i></button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="clearfix mb-3"></div>
+
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <tr>
+                                    <th>Текст уведомления</th>
+                                    <th>Дата создания</th>
+                                    <th>Статус отправки</th>
+                                    <th>Состояние</th>
+                                </tr>
+
+                                {% for item in notify_list %}
+                                    <tr class="dropdown-item-unread">
+                                        <td>{{ item.notify_body }}
+                                            <div class="table-links">
+                                                <a href="{% url 'notify:notify_read' item.category item.pk %}">
+                                                    {% if item.is_read %}
+                                                    Отметить как не прочитанное
+                                                    {% else %}
+                                                    Отметить как прочитанное
+                                                    {% endif %}
+                                                </a>
+                                                <div class="bullet"></div>
+                                                {% if item.category == 'PST' %}
+                                                <a href="{% url 'posts:post_detail' item.post.pk %}">Просмотреть Хаб</a>
+                                                {% endif %}
+                                                <div class="bullet"></div>
+                                                <a href="{% url 'notify:notify_delete' item.category item.pk %}" class="text-danger">Удалить</a>
+                                            </div>
+                                        </td>
+
+                                        <td>{{ item.created_at }}</td>
+                                        <td>
+                                            {{ item.get_status_send_display }}
+                                        </td>
+                                        <td>
+                                            {% if item.is_read %}
+                                                Просмотрено
+                                            {% else %}
+                                                Не просмотрено
+                                            {% endif %}
+                                        </td>
+
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

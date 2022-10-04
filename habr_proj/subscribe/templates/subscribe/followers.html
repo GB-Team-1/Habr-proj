@@ -1,0 +1,53 @@
+{% extends 'mainapp/new_base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="section">
+<div class="section-header">
+            <h1>Подписчики {{ username }}</h1>
+            <div class="section-header-breadcrumb">
+              <div class="breadcrumb-item active"><a href="{% url 'auth:user_profile' pk %}">{{ username }}</a></div>
+              <div class="breadcrumb-item">Подписчики {{ username }}</div>
+            </div>
+          </div>
+    <div class="">
+        <div class="card card-danger">
+            <div class="card-body">
+                <div class="owl-carousel owl-theme"
+                     style="display: flex;flex-wrap: wrap;justify-content: space-around;">
+                    {% for item in followers %}
+                        <div>
+                        <div class="user-item">
+                        {% if item.subscriber.avatar %}
+                            <img alt="image" src="/media/{{ item.subscriber.avatar }}" class="img-fluid"
+                                 style="width: 200px">
+                        {% else %}
+                            <img alt="image" src="{% static 'assets/img/avatar/avatar-1.png' %}" class="img-fluid"
+                                 style="width: 200px">
+                        {% endif %}
+                        <div class="user-details">
+                        {% if user == item.subscriber %}
+                        <div class="user-name"><a href="{% url 'auth:profile' %}">{{ item.subscriber.username }}</a></div>
+                        {% else %}
+                            <div class="user-name"><a href="{% url 'auth:user_profile' item.subscriber.pk %}">{{ item.subscriber.username }}</a></div>
+                        {% endif %}
+                        <div class="text-job text-muted">{{ item.subscriber.specialization }}</div>
+                        <div class="user-cta">
+                        {% if user == item.subscriber %}
+                        {% elif item.subscriber.username in user_followings.get %}
+                        <a href="{% url 'subscribe:unsubscribes' item.subscriber.pk %}" class="btn btn-danger">Отписаться</a>
+                        {% else %}
+                        <a href="{% url 'subscribe:subscribes' item.subscriber.pk %}" class="btn btn-primary">Подписаться</a>
+                    {% endif %}
+                    </div>
+                    </div>
+                    </div>
+                    </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

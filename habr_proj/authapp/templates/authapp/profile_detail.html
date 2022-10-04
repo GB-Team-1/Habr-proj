@@ -1,0 +1,113 @@
+{% extends 'mainapp/new_base.html' %}
+{% load static %}
+
+{% block content %}
+    <section class="section">
+        <div class="section-header">
+            <div class="section-header-back">
+                <a href="{% url 'main' %}" class="btn btn-icon"><i class="fas fa-arrow-left"></i></a>
+            </div>
+            <h1>Профиль {{ user_detail.username }}</h1>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item active"><a href="{% url 'main' %}">Главная</a></div>
+                <div class="breadcrumb-item">Профиль {{ user_detail.username }}</div>
+            </div>
+        </div>
+        <div class="section-body">
+             <div class="col-12 col-sm-12">
+                <div class="card profile-widget">
+                  <div class="profile-widget-header">
+                      {% if user_detail.avatar %}
+                          <img alt="image" src="/media/{{ user_detail.avatar }}" class="rounded-circle profile-widget-picture" width="100" height="100">
+                      {% else %}
+                          <img alt="image" src="{% static 'assets/img/avatar/avatar-1.png' %}" class="rounded-circle profile-widget-picture">
+                      {% endif %}
+                    <div class="profile-widget-items">
+                      <div class="profile-widget-item">
+                        <div class="profile-widget-item-label">Хабы</div>
+                        <div class="profile-widget-item-value">{{ count_posts }}</div>
+                      </div>
+                      <div class="profile-widget-item">
+                        <div class="profile-widget-item-label"><a href="{% url 'subscribe:followers' user_detail.pk %}">Followers</a></div>
+                        <div class="profile-widget-item-value">{{ followers }}</div>
+                      </div>
+                      <div class="profile-widget-item">
+                        <div class="profile-widget-item-label"><a href="{% url 'subscribe:view_subscribes' user_detail.pk %}">Following</a></div>
+                        <div class="profile-widget-item-value">{{ following }}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="profile-widget-description pb-0">
+                    <div class="profile-widget-name">{{ user_detail.first_name }} {{ user_detail.last_name }}<div class="text-muted d-inline font-weight-normal"><div class="slash"></div>
+                        {% if user_detail.specialization %}
+                            {{ user_detail.specialization }}
+                            {% else %}
+                        {% endif %}
+                    </div></div>
+                    <p>{{ user_detail.about_me }}</p>
+                  </div>
+
+                  <div class="card-footer text-center pt-0">
+{#                    <div class="font-weight-bold mb-2 text-small">Подписаться на {{ user_detail.first_name }} {{ user_detail.last_name }}</div>#}
+                      {% if is_subscriber %}
+                    <a href="{% url 'subscribe:unsubscribes' user_detail.pk %}" class="btn btn-danger mt-3">Отписаться</a>
+                      {% else %}
+                       <a href="{% url 'subscribe:subscribes' user_detail.pk %}" class="btn btn-primary mt-3">Подписаться</a>
+                      {% endif %}
+                  </div>
+                </div>
+              </div>
+
+        <div class="row">
+             {% for post in posts %}
+        <div class="col-12 col-md-4 col-lg-4">
+                    <article class="article article-style-c" style="height: 500px">
+                        <div class="article-header">
+                            {% if not post.image %}
+                                <div class="article-image" data-background="{% static 'assets/img/news/img13.jpg' %}">
+                            {% else %}
+                                <div class="article-image" data-background="/media/{{ post.image }}">
+                            {% endif %}
+                            </div>
+                            </div>
+                            <div class="article-details">
+                                <div class="article-category"><a
+                                        href="{% url 'posts:post_category' post.category.pk %}">{{ post.category.name }}</a>
+                                    <div class="bullet"></div>
+                                    <a href="#">{{ post.created_at.date }}
+                                        в {{ post.created_at.time.hour }}:{{ post.created_at.time.minute }}</a></div>
+                                <div class="article-title">
+                                    <h2><a href="{% url 'posts:post_detail' post.pk %}">{{ post.title }}</a></h2>
+                                </div>
+                                <p style="overflow: hidden;display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;line-height: 1.3em;height: 3.9em;">
+                                    {{ post.body }}</p>
+                                <div class="article-user">
+                                    {% if post.user.avatar %}
+                                        <img alt="image" src="/media/{{ post.user.avatar }}"
+                                             style="width: 45px;height: 45px;">
+                                    {% else %}
+                                        <img alt="image" src="{% static 'assets/img/avatar/avatar-1.png' %}">
+                                    {% endif %}
+                                    <div class="article-user-details">
+                                        <div class="user-detail-name">
+                                            {% if post.user.pk == user.pk %}
+                                                <a href="{% url 'auth:profile' %}">{{ post.user.username }}</a>
+                                            {% else %}
+                                                <a href="{% url 'auth:user_profile' post.user.pk %}">{{ post.user.username }}</a>
+                                            {% endif %}
+                                        </div>
+                                        {% if post.user.specialization %}
+                                            <div class="text-job">{{ post.user.specialization }}</div>
+                                        {% else %}
+                                            <div class="text-job">{{ post.user.specialization }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                    </article>
+                </div>
+        {% endfor %}
+        </div>
+        </div>
+
+    </section>
+{% endblock %}

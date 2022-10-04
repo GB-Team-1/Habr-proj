@@ -1,0 +1,16 @@
+<ul style="list-style: none;display: flex;margin: 0;padding: 0;justify-content: space-between;
+">
+    <div style="display: flex">
+        <li style="margin-right: 10px;"><i class="fas fa-comment"></i> <span>{{ post.get_comments_quantity }}</span>
+        </li>
+
+        <li style="margin-right: 10px;"><i class="fas fa-eye"></i> <span>{{ post.views }}</span></li>
+    </div>
+    <div>
+        <li class="like" style="margin-right: 10px;" id="{{ post.uid }}" data-id="{{ post.uid }}">
+            <i {% if user in post.get_user_like %}class="fas fa-heart fa-2x" {% else %}class="far fa-heart" {% endif %}
+               data-id="{{ post.uid }}"></i>
+            <span>{{ post.get_likes_quantity }}</span></li>
+    </div>
+
+</ul>
